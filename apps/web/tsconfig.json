@@ -1,7 +1,7 @@
 {
   "extends": "@zgeoff/tsconfig/react.json",
   "compilerOptions": {
-    "types": ["bun", "vite/client", "@zgeoff/bun-test-extended"]
+    "types": ["bun", "vite/client", "@tanstack/react-start"]
   },
   "files": [],
   "include": ["panda.config.ts", "vite.config.ts", "server.ts", "src/**/*.ts", "src/**/*.tsx"]

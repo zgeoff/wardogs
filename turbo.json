@@ -10,7 +10,7 @@
       "outputs": ["src/routeTree.gen.ts"]
     },
     "build": {
-      "dependsOn": ["^build", "codegen", "typegen"],
+      "dependsOn": ["^build", "^codegen", "codegen", "typegen"],
       "outputs": ["dist/**"]
     },
     "typecheck": {

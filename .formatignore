@@ -1,4 +1,5 @@
 **/routeTree.gen.ts
-**/styled-system/**
+libs/design/styled-system/styled-system/**
+**/src/styled-system/**
 **/node_modules/**
 **/dist/**

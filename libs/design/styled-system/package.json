@@ -1,0 +1,27 @@
+{
+  "name": "@wardogs-love/styled-system",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./styles.css": "./styled-system/styles.css",
+    "./types/*": "./styled-system/types/*.d.ts",
+    "./*": {
+      "types": "./styled-system/*/index.d.ts",
+      "default": "./styled-system/*/index.js"
+    }
+  },
+  "scripts": {
+    "codegen": "panda",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@wardogs-love/panda-preset": "workspace:*",
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@pandacss/dev": "catalog:",
+    "@zgeoff/tsconfig": "catalog:",
+    "typescript": "catalog:"
+  }
+}

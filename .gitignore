@@ -6,7 +6,8 @@ dist/
 .env
 .env.*
 !.env.example
-styled-system/
+libs/design/styled-system/styled-system/
+**/src/styled-system/
 routeTree.gen.ts
 .test-results/
 playwright-report/

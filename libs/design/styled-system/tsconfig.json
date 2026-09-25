@@ -1,0 +1,5 @@
+{
+  "extends": "@zgeoff/tsconfig/react.json",
+  "files": [],
+  "include": ["panda.config.ts"]
+}

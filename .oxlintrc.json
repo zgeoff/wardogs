@@ -16,7 +16,8 @@
     "**/node_modules/**",
     "**/dist/**",
     "**/*.json",
-    "**/styled-system/**",
+    "libs/design/styled-system/styled-system/**",
+    "**/src/styled-system/**",
     "**/routeTree.gen.ts",
     // Ladle parses these files for `export const`, which the house style bans elsewhere
     "**/.ladle/**"

@@ -7,7 +7,6 @@
     "build": "vite build",
     "dev": "vite dev",
     "start": "bun server.ts",
-    "test": "bun test",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "typegen": "tsr generate"
   },
@@ -34,7 +33,6 @@
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "@vitejs/plugin-react": "catalog:",
-    "@zgeoff/bun-test-extended": "catalog:",
     "@zgeoff/tsconfig": "catalog:",
     "babel-plugin-react-compiler": "catalog:",
     "postcss": "catalog:",
