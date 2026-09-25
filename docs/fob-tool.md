@@ -52,6 +52,9 @@ The `/fob` route renders on the client only. The rest of the site renders on the
 
 - Pick a piece from the palette, then click to place it. `R` turns it, and `PageUp`/`PageDown` raise
   and lower it.
+- A right click, or `Esc`, stops placing; with nothing to place, it clears the selection. A right
+  drag still pans the camera.
+- `D` duplicates: the selected piece goes on the cursor, turned the same way, to place more of it.
 - Select a piece to move, turn, restage, or delete it. Drag a box to select many.
 - Undo and redo cover every change.
 - Pan and zoom in both cameras.

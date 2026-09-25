@@ -68,3 +68,36 @@ test('it undoes a placement', async ({ page }) => {
 
   await expect(page.getByRole('row', { name: /Door/u })).toBeHidden();
 });
+
+test('it stops placing on a right click', async ({ page }) => {
+  await page.goto('/fob');
+  await page.getByRole('button', { name: /Door/u }).click();
+
+  await placeOnClearGround(page);
+
+  await page.mouse.down({ button: 'right' });
+  await page.mouse.up({ button: 'right' });
+
+  await expect(page.getByText('stop placing')).toBeHidden();
+  await expect(page.getByText('duplicate')).toBeVisible();
+});
+
+test('it duplicates the selected piece onto the cursor', async ({ page }) => {
+  await page.goto('/fob');
+  await page.getByRole('button', { name: /Door/u }).click();
+
+  await placeOnClearGround(page);
+
+  const box = await page.getByTestId('planner-canvas').boundingBox();
+
+  const x = (box?.x ?? 0) + (box?.width ?? 0) / 2 + 80;
+  const y = (box?.y ?? 0) + (box?.height ?? 0) / 2;
+
+  await page.keyboard.press('Escape');
+  await page.mouse.click(x, y);
+  await page.keyboard.press('d');
+  await page.mouse.move(x + 60, y);
+  await page.mouse.click(x + 60, y);
+
+  await expect(page.getByRole('row', { name: /Door/u })).toContainText('×2');
+});

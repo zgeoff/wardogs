@@ -63,6 +63,8 @@ export interface EditorActions {
   readonly renamePlan: (name: string) => void;
   readonly pickPiece: (pieceID: string) => void;
   readonly cancelTool: () => void;
+  readonly resetTool: () => void;
+  readonly pickSelectedPiece: () => boolean;
   readonly buildGhost: (cell: CellOffset) => PlacedPiece | null;
   readonly placePiece: (cell: CellOffset) => boolean;
   readonly rotateGhost: () => void;

@@ -31,10 +31,11 @@ const COMMAND_HOTKEYS: Readonly<Record<string, Hotkey>> = {
 
 const PLAIN_HOTKEYS: Readonly<Record<string, Hotkey>> = {
   escape: (state) => {
-    if (state.tool === 'place') {
-      state.cancelTool();
-    } else {
-      state.clearSelection();
+    state.resetTool();
+  },
+  d: (state) => {
+    if (state.tool === 'select') {
+      state.pickSelectedPiece();
     }
   },
   r: (state) => {

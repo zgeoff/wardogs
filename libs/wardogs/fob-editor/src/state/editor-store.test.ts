@@ -296,3 +296,49 @@ test('it moves the selection by the cells a drag covered', () => {
 
   expect(useEditorStore.getState().plan.pieces[0]).toMatchObject({ x: 2, z: -1 });
 });
+
+test('it puts the selected piece on the cursor, turned the same way, to duplicate it', () => {
+  useEditorStore.getState().loadPlan({
+    id: 'd',
+    name: 'Plan',
+    plan: {
+      stageCount: 1,
+      pieces: [
+        { id: 'a', pieceID: 'bremer-wall', x: 0, z: 0, elevation: 0, rotation: 3, stage: 1 },
+      ],
+    },
+  });
+
+  useEditorStore.getState().selectPieces(['a'], 'replace');
+  useEditorStore.getState().pickSelectedPiece();
+
+  expect(useEditorStore.getState()).toMatchObject({
+    tool: 'place',
+    palettePieceID: 'bremer-wall',
+    ghostRotation: 3,
+    selection: new Set(),
+  });
+});
+
+test('it duplicates nothing while nothing is selected', () => {
+  useEditorStore
+    .getState()
+    .loadPlan({ id: 'd', name: 'Plan', plan: { stageCount: 1, pieces: [] } });
+
+  expect(useEditorStore.getState().pickSelectedPiece()).toBeFalse();
+});
+
+test('it stops placing on a reset', () => {
+  useEditorStore.getState().pickPiece('hesco-small');
+  useEditorStore.getState().resetTool();
+
+  expect(useEditorStore.getState()).toMatchObject({ tool: 'select', palettePieceID: null });
+});
+
+test('it lets go of the selection on a reset with the select tool', () => {
+  useEditorStore.getState().cancelTool();
+  useEditorStore.getState().selectPieces(['a'], 'replace');
+  useEditorStore.getState().resetTool();
+
+  expect(useEditorStore.getState().selection).toStrictEqual(new Set());
+});

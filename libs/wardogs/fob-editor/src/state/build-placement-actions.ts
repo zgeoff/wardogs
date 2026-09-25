@@ -7,7 +7,14 @@ const NEXT_ROTATION: Readonly<Record<Rotation, Rotation>> = { 0: 1, 1: 2, 2: 3, 
 
 type PlacementActions = Pick<
   EditorActions,
-  'buildGhost' | 'cancelTool' | 'liftGhost' | 'pickPiece' | 'placePiece' | 'rotateGhost'
+  | 'buildGhost'
+  | 'cancelTool'
+  | 'liftGhost'
+  | 'pickPiece'
+  | 'pickSelectedPiece'
+  | 'placePiece'
+  | 'resetTool'
+  | 'rotateGhost'
 >;
 
 // the place tool: pick a piece from the palette, aim its ghost, and drop it on the grid
@@ -19,6 +26,19 @@ export function buildPlacementActions(api: EditorAPI): PlacementActions {
     cancelTool: () => {
       api.set({ tool: 'select', palettePieceID: null, ghostLift: 0 });
     },
+
+    // Esc or a right click: stop placing, or with the select tool, let go of the selection
+    resetTool: () => {
+      if (api.get().tool === 'place') {
+        api.get().cancelTool();
+      } else {
+        api.get().clearSelection();
+      }
+    },
+
+    // duplicate: the selected piece (the last one selected, of several) goes on the cursor, turned
+    // the same way, to place more of it
+    pickSelectedPiece: () => pickSelectedPiece(api),
     buildGhost: (cell) => buildGhost(api, cell),
     placePiece: (cell) => placeGhost(api, cell),
     rotateGhost: () => {
@@ -30,6 +50,26 @@ export function buildPlacementActions(api: EditorAPI): PlacementActions {
       api.set({ ghostLift: Math.max(0, ghostLift) });
     },
   };
+}
+
+function pickSelectedPiece(api: EditorAPI): boolean {
+  const state = api.get();
+  const id = [...state.selection].at(-1);
+  const piece = state.plan.pieces.find((placed) => placed.id === id);
+
+  if (piece === undefined) {
+    return false;
+  }
+
+  api.set({
+    tool: 'place',
+    palettePieceID: piece.pieceID,
+    ghostRotation: piece.rotation,
+    ghostLift: 0,
+    selection: new Set(),
+  });
+
+  return true;
 }
 
 function buildGhost(api: EditorAPI, cell: CellOffset): PlacedPiece | null {

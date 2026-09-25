@@ -16,10 +16,15 @@ import { PlacedPieces } from './placed-pieces';
 // orbits (in the orbit view) with the right one
 const TOP_BUTTONS = { MIDDLE: MOUSE.PAN, RIGHT: MOUSE.PAN };
 const ORBIT_BUTTONS = { MIDDLE: MOUSE.PAN, RIGHT: MOUSE.ROTATE };
+const RIGHT_BUTTON = 2;
+
+// how far, in pixels, a right press may travel and still count as a click rather than a pan
+const CLICK_SLOP = 5;
 
 export function PlannerCanvas() {
   const cameraMode = useEditorStore((state) => state.cameraMode);
   const controls = useRef<ComponentRef<typeof MapControls>>(null);
+  const rightPress = useRef<{ x: number; y: number } | null>(null);
 
   // tells automation (and anyone curious) when the scene takes pointer input
   const [isReady, setIsReady] = useState(false);
@@ -34,6 +39,25 @@ export function PlannerCanvas() {
       }}
       onContextMenu={(event) => {
         event.preventDefault();
+      }}
+      onPointerDown={(event) => {
+        if (event.button === RIGHT_BUTTON) {
+          rightPress.current = { x: event.clientX, y: event.clientY };
+        }
+      }}
+      onPointerUp={(event) => {
+        const press = rightPress.current;
+
+        if (event.button !== RIGHT_BUTTON || press === null) {
+          return;
+        }
+
+        rightPress.current = null;
+
+        // a right drag pans or orbits the camera; a right click stops placing or deselects
+        if (Math.hypot(event.clientX - press.x, event.clientY - press.y) <= CLICK_SLOP) {
+          useEditorStore.getState().resetTool();
+        }
       }}
       orthographic
     >

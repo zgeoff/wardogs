@@ -47,7 +47,7 @@ export function StatusBar() {
             <Kbd>PgUp</Kbd>/<Kbd>PgDn</Kbd> lift {ghostLift > 0 ? `(+${ghostLift} m)` : ''}
           </span>
           <span className={hint}>
-            <Kbd>Esc</Kbd> stop placing
+            <Kbd>right click</Kbd>/<Kbd>Esc</Kbd> stop placing
           </span>
         </>
       ) : (
@@ -60,6 +60,9 @@ export function StatusBar() {
           </span>
           <span className={hint}>
             <Kbd>R</Kbd> rotate
+          </span>
+          <span className={hint}>
+            <Kbd>D</Kbd> duplicate
           </span>
           <span className={hint}>
             <Kbd>Del</Kbd> delete
