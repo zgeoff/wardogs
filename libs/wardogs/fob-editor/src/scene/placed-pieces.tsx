@@ -19,6 +19,7 @@ export function PlacedPieces() {
   const tool = useEditorStore((state) => state.tool);
   const gesture = useEditorStore((state) => state.gesture);
   const pointer = useEditorStore((state) => state.pointer);
+  const cameraMode = useEditorStore((state) => state.cameraMode);
   const dragged = findDraggedPlan({ plan, selection, gesture, pointer });
   const shownPlan = dragged ?? plan;
   const isDragBlocked = dragged !== null && hasCollision(dragged, selection);
@@ -31,6 +32,7 @@ export function PlacedPieces() {
           <PieceMesh
             isBlocked={isDragBlocked && selection.has(piece.id)}
             isDimmed={piece.stage < viewStage}
+            isOutlined={cameraMode !== 'orbit'}
             isOutside={isOutsideFOBArea(shownPlan, piece)}
             isSelectable={tool === 'select'}
             isSelected={selection.has(piece.id)}
@@ -62,6 +64,7 @@ interface PieceMeshProps {
   readonly isSelectable: boolean;
   readonly isOutside: boolean;
   readonly isBlocked: boolean;
+  readonly isOutlined: boolean;
 }
 
 function PieceMesh(props: PieceMeshProps) {
@@ -129,7 +132,9 @@ function PieceMesh(props: PieceMeshProps) {
   );
 }
 
-// a box always has an outline; a model has one only to show it is selected or outside the FOB area
+// a box always has an outline, and so does a model in the top view, where the outline shows the
+// piece's footprint; in the 3D view a model has one only to show it is selected or outside the FOB
+// area
 function pickEdgeColor(props: PieceMeshProps, isBox: boolean): string | null {
   if (props.isSelected) {
     return sceneColors.selected;
@@ -139,5 +144,9 @@ function pickEdgeColor(props: PieceMeshProps, isBox: boolean): string | null {
     return sceneColors.outsideArea;
   }
 
-  return isBox ? '#000000' : null;
+  if (isBox) {
+    return '#000000';
+  }
+
+  return props.isOutlined ? sceneColors.footprint : null;
 }

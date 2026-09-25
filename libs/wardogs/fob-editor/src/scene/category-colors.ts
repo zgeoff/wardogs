@@ -19,5 +19,6 @@ export const sceneColors = {
   selected: '#ffc978',
   invalid: '#e5584f',
   outsideArea: '#e8c547',
+  footprint: '#8d8872',
   boxSelect: '#f5b04a',
 } as const;
