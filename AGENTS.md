@@ -216,6 +216,14 @@ planner (`docs/fob-tool.md`).
 Load the `testing` skill before writing a test. Pure libraries run under the root preload; React
 packages add `@zgeoff/bun-test-react` (and its `zustand` preload) in their own `bunfig.toml`.
 
+## Pull requests
+
+- Pull requests go out in batches. Each one is green, and every CodeRabbit finding has an answer: a
+  fix with the commit cited, or a decline with the reason. Resolve the thread after the answer.
+- The user merges, unless they say otherwise for a batch.
+- CodeRabbit reads the central zgeoff/coderabbit config. Add a `.coderabbit.yaml` with
+  `inheritance: true` only for rules specific to this repo.
+
 ## CI and deploy
 
 - `pr.yml` (delivered by repo-sync) runs the shared checks. The `BUN_CHECK_SCRIPTS` repo variable
