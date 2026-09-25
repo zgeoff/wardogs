@@ -122,3 +122,25 @@ test('it paints a copy of the picked piece along a drag', async ({ page }) => {
     /×(?:[3-9]|\d{2})/u,
   );
 });
+
+test('it pastes a copied group wherever it is clicked', async ({ page }) => {
+  await page.goto('/fob');
+  await page.getByRole('button', { name: /Door/u }).click();
+
+  await placeOnClearGround(page);
+
+  const box = await page.getByTestId('planner-canvas').boundingBox();
+
+  const x = (box?.x ?? 0) + (box?.width ?? 0) / 2 - 200;
+  const y = (box?.y ?? 0) + (box?.height ?? 0) / 2 + 150;
+
+  await page.keyboard.press('Escape');
+  await page.keyboard.press('Control+a');
+  await page.keyboard.press('Control+c');
+  await page.keyboard.press('Control+v');
+  await page.mouse.move(x, y);
+  await page.mouse.click(x, y);
+
+  await expect(page.getByRole('row', { name: /Door/u })).toContainText('×2');
+  await expect(page.getByRole('row', { name: /Forward Operating Base/u })).toContainText('×2');
+});

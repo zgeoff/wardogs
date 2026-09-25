@@ -29,6 +29,7 @@ export function StatusBar() {
   const pointer = useEditorStore((state) => state.pointer);
   const tool = useEditorStore((state) => state.tool);
   const ghostLift = useEditorStore((state) => state.ghostLift);
+  const isPasting = useEditorStore((state) => state.stamp !== null);
 
   return (
     <div className={bar}>
@@ -37,12 +38,20 @@ export function StatusBar() {
       </span>
       {tool === 'place' ? (
         <>
-          <span className={hint}>
-            <Kbd>click</Kbd>/<Kbd>drag</Kbd> place
-          </span>
-          <span className={hint}>
-            <Kbd>Shift</Kbd> drag in a line
-          </span>
+          {isPasting ? (
+            <span className={hint}>
+              <Kbd>click</Kbd> paste
+            </span>
+          ) : (
+            <>
+              <span className={hint}>
+                <Kbd>click</Kbd>/<Kbd>drag</Kbd> place
+              </span>
+              <span className={hint}>
+                <Kbd>Shift</Kbd> drag in a line
+              </span>
+            </>
+          )}
           <span className={hint}>
             <Kbd>R</Kbd> rotate
           </span>
@@ -66,6 +75,9 @@ export function StatusBar() {
           </span>
           <span className={hint}>
             <Kbd>D</Kbd> duplicate
+          </span>
+          <span className={hint}>
+            <Kbd>Ctrl+C</Kbd>/<Kbd>Ctrl+V</Kbd> copy, paste
           </span>
           <span className={hint}>
             <Kbd>Del</Kbd> delete

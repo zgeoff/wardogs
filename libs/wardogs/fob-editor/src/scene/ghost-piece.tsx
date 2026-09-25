@@ -4,35 +4,55 @@ import type { PlacedPiece } from '@wardogs-love/fob';
 import { getPiece } from '@wardogs-love/game-data';
 import { useEditorStore } from '../state/editor-store';
 import { findGhostCell } from '../state/find-ghost-cell';
+import { findStampCell } from '../state/find-stamp-cell';
+import type { EditorActions, EditorState } from '../state/types';
 import { categoryColors, sceneColors } from './category-colors';
 import { getPieceTransform } from './get-piece-transform';
 import { skipRaycast } from './skip-raycast';
 
-// the picked piece under the pointer, centred on it and snapped to the grid, or a copy on every
-// cell of a paint stroke in progress; red where a copy would intersect a placed piece
+// the picked piece under the pointer, centred on it and snapped to the grid, a copy on every cell
+// of a paint stroke in progress, or a pasted group; red where a copy would intersect a placed piece
 export function GhostPiece() {
-  const palettePieceID = useEditorStore((state) => state.palettePieceID);
-  const pointer = useEditorStore((state) => state.pointer);
-  const rotation = useEditorStore((state) => state.ghostRotation);
-  const paint = useEditorStore((state) => state.paint);
-
-  // selected only to re-render when the plan changes or the player lifts the ghost
+  // selected to re-render when any input to the ghosts changes; the ghosts read the store directly
+  useEditorStore((state) => state.palettePieceID);
+  useEditorStore((state) => state.pointer);
+  useEditorStore((state) => state.ghostRotation);
+  useEditorStore((state) => state.paint);
+  useEditorStore((state) => state.stamp);
   useEditorStore((state) => state.plan);
   useEditorStore((state) => state.ghostLift);
 
-  const cell = findGhostCell(palettePieceID, rotation, pointer);
-  const cells = paint?.cells ?? (cell === null ? [] : [cell]);
-  const state = useEditorStore.getState();
+  const ghosts = buildGhosts(useEditorStore.getState());
 
   return (
     <group name="ghost">
-      {cells.map((each) => {
-        const ghost = state.buildGhost(each);
-
-        return ghost === null ? null : <GhostBox ghost={ghost} key={`${each.x}:${each.z}`} />;
-      })}
+      {ghosts.map((ghost) => (
+        <GhostBox ghost={ghost} key={`${ghost.id}:${ghost.x}:${ghost.z}`} />
+      ))}
     </group>
   );
+}
+
+type GhostInput = Pick<
+  EditorState,
+  'ghostRotation' | 'paint' | 'palettePieceID' | 'pointer' | 'stamp'
+> & {
+  readonly buildGhost: EditorActions['buildGhost'];
+  readonly buildStampGhosts: EditorActions['buildStampGhosts'];
+};
+
+// a pasted group centred on the pointer, the cells of a paint stroke, or the palette piece
+function buildGhosts(state: GhostInput): readonly PlacedPiece[] {
+  if (state.stamp !== null) {
+    const cell = findStampCell(state.stamp, state.pointer);
+
+    return cell === null ? [] : state.buildStampGhosts(cell);
+  }
+
+  const cell = findGhostCell(state.palettePieceID, state.ghostRotation, state.pointer);
+  const cells = state.paint?.cells ?? (cell === null ? [] : [cell]);
+
+  return cells.flatMap((each) => state.buildGhost(each) ?? []);
 }
 
 interface GhostBoxProps {

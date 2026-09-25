@@ -1,5 +1,6 @@
 import type { ThreeEvent } from '@react-three/fiber';
 import { useEditorStore } from '../state/editor-store';
+import { findStampCell } from '../state/find-stamp-cell';
 
 const GROUND_SIZE = 4000;
 
@@ -37,7 +38,18 @@ function handlePointerDown(event: ThreeEvent<PointerEvent>) {
     return;
   }
 
-  state.startPaint(point);
+  // a pasted group lands whole on each click; a palette piece paints along a drag
+  if (state.stamp === null) {
+    state.startPaint(point);
+
+    return;
+  }
+
+  const cell = findStampCell(state.stamp, point);
+
+  if (cell !== null) {
+    state.placeStamp(cell);
+  }
 }
 
 function handlePointerMove(event: ThreeEvent<PointerEvent>) {

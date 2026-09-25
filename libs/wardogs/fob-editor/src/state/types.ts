@@ -23,6 +23,9 @@ export interface CellOffset {
 
 // a place-tool drag: the cell it started on, the step between copies (the piece's footprint), the
 // steps the pointer has passed through, and the cells a copy lands on when the drag ends
+// a copied piece, placed relative to its group's lowest corner cell and lowest base
+export type StampPiece = Pick<PlacedPiece, 'elevation' | 'pieceID' | 'rotation' | 'x' | 'z'>;
+
 interface PaintStroke {
   readonly origin: CellOffset;
   readonly stride: CellOffset;
@@ -58,6 +61,12 @@ export interface EditorState {
   readonly pointer: GroundPoint | null;
   readonly gesture: Gesture | null;
   readonly paint: PaintStroke | null;
+
+  // the pieces Ctrl+C copied, kept until the next copy
+  readonly clipboard: readonly StampPiece[] | null;
+
+  // the copied group on the cursor while the place tool pastes it, in place of the palette piece
+  readonly stamp: readonly StampPiece[] | null;
 }
 
 export interface LoadedPlan {
@@ -80,6 +89,10 @@ export interface EditorActions {
   readonly startPaint: (point: GroundPoint) => void;
   readonly updatePaint: (point: GroundPoint, isLocked: boolean) => void;
   readonly endPaint: () => number;
+  readonly setClipboard: () => boolean;
+  readonly pickClipboard: () => boolean;
+  readonly buildStampGhosts: (cell: CellOffset) => readonly PlacedPiece[];
+  readonly placeStamp: (cell: CellOffset) => boolean;
   readonly rotateGhost: () => void;
   readonly liftGhost: (metres: number) => void;
   readonly selectPieces: (ids: readonly string[], mode: SelectMode) => void;

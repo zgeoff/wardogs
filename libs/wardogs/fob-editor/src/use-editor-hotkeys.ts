@@ -24,6 +24,12 @@ const COMMAND_HOTKEYS: Readonly<Record<string, Hotkey>> = {
   y: (state) => {
     state.redo();
   },
+  c: (state) => {
+    state.setClipboard();
+  },
+  v: (state) => {
+    state.pickClipboard();
+  },
   a: (state) => {
     state.selectAllVisible();
   },
@@ -33,8 +39,17 @@ const PLAIN_HOTKEYS: Readonly<Record<string, Hotkey>> = {
   escape: (state) => {
     state.resetTool();
   },
+
+  // one piece goes on the cursor as a palette piece, so it paints; a group goes on as a stamp
   d: (state) => {
-    if (state.tool === 'select') {
+    if (state.tool !== 'select') {
+      return;
+    }
+
+    if (state.selection.size > 1) {
+      state.setClipboard();
+      state.pickClipboard();
+    } else {
       state.pickSelectedPiece();
     }
   },

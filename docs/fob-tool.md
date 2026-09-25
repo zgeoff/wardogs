@@ -58,7 +58,11 @@ The `/fob` route renders on the client only. The rest of the site renders on the
   right click or `Esc` during a drag drops it.
 - A right click, or `Esc`, stops placing; with nothing to place, it clears the selection. A right
   drag still pans the camera.
-- `D` duplicates: the selected piece goes on the cursor, turned the same way, to place more of it.
+- `Ctrl+C` copies the selection, and `Ctrl+V` puts the copy on the cursor as one group: each click
+  lands a copy of the whole group, settled as a unit on whatever is under it, and `R` turns it. The
+  copy stays until the next `Ctrl+C`, so it pastes into another stage too.
+- `D` duplicates: one selected piece goes on the cursor, turned the same way, to place or paint more
+  of it; with several selected, `D` copies and pastes them as a group.
 - Select a piece to move, turn, restage, or delete it. Drag a box to select many.
 - Undo and redo cover every change.
 - Pan and zoom in both cameras.

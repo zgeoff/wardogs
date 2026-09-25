@@ -4,6 +4,7 @@ import { buildInitialEditorState } from './build-initial-editor-state';
 import { buildPaintActions } from './build-paint-actions';
 import { buildPlacementActions } from './build-placement-actions';
 import { buildSelectionActions } from './build-selection-actions';
+import { buildStampActions } from './build-stamp-actions';
 import { buildViewActions } from './build-view-actions';
 import type { EditorStore } from './types';
 
@@ -14,6 +15,7 @@ export const useEditorStore = create<EditorStore>()((set, get) => {
     ...buildInitialEditorState(),
     ...buildPlacementActions(api),
     ...buildPaintActions(api),
+    ...buildStampActions(api),
     ...buildEditActions(api),
     ...buildSelectionActions(api),
     ...buildViewActions(api),

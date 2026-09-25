@@ -20,5 +20,7 @@ export function buildInitialEditorState(): EditorState {
     pointer: null,
     gesture: null,
     paint: null,
+    clipboard: null,
+    stamp: null,
   };
 }

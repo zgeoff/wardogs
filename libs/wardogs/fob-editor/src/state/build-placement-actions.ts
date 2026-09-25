@@ -1,6 +1,7 @@
 import { addPlacedPiece, getRestingElevation, hasCollision } from '@wardogs-love/fob';
 import type { PlacedPiece, Rotation } from '@wardogs-love/fob';
 import { buildPlanCommit } from './build-plan-commit';
+import { rotateStamp } from './rotate-stamp';
 import type { CellOffset, EditorAPI, EditorActions } from './types';
 
 const NEXT_ROTATION: Readonly<Record<Rotation, Rotation>> = { 0: 1, 1: 2, 2: 3, 3: 0 };
@@ -21,10 +22,16 @@ type PlacementActions = Pick<
 export function buildPlacementActions(api: EditorAPI): PlacementActions {
   return {
     pickPiece: (pieceID) => {
-      api.set({ tool: 'place', palettePieceID: pieceID, ghostLift: 0, selection: new Set() });
+      api.set({
+        tool: 'place',
+        palettePieceID: pieceID,
+        stamp: null,
+        ghostLift: 0,
+        selection: new Set(),
+      });
     },
     cancelTool: () => {
-      api.set({ tool: 'select', palettePieceID: null, ghostLift: 0, paint: null });
+      api.set({ tool: 'select', palettePieceID: null, stamp: null, ghostLift: 0, paint: null });
     },
 
     // Esc or a right click: drop a paint stroke in progress, stop placing, or with the select tool,
@@ -45,7 +52,13 @@ export function buildPlacementActions(api: EditorAPI): PlacementActions {
     buildGhost: (cell) => buildGhost(api, cell),
     placePiece: (cell) => placeGhost(api, cell),
     rotateGhost: () => {
-      api.set({ ghostRotation: NEXT_ROTATION[api.get().ghostRotation] });
+      const stamp = api.get().stamp;
+
+      if (stamp === null) {
+        api.set({ ghostRotation: NEXT_ROTATION[api.get().ghostRotation] });
+      } else {
+        api.set({ stamp: rotateStamp(stamp) });
+      }
     },
     liftGhost: (metres) => {
       const ghostLift = toCentimetres(api.get().ghostLift + metres);
@@ -67,6 +80,7 @@ function pickSelectedPiece(api: EditorAPI): boolean {
   api.set({
     tool: 'place',
     palettePieceID: piece.pieceID,
+    stamp: null,
     ghostRotation: piece.rotation,
     ghostLift: 0,
     selection: new Set(),
