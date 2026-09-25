@@ -45,6 +45,9 @@ in Cloudflare R2, and credentials resolve from 1Password at run time, so no secr
    op run --env-file=.env -- pulumi config set wardogs-infra:zoneId <zone-id> --stack prod
    ```
 
+   Commit the `Pulumi.prod.yaml` that these commands write. It holds the stack config and the
+   encryption salt, and no secret.
+
 4. Run `bun run up` to create the records.
 5. Add the Fly certificates. Each command prints a DNS validation target:
 
@@ -63,6 +66,9 @@ in Cloudflare R2, and credentials resolve from 1Password at run time, so no secr
    ```
 
 7. Check the certificates with `fly certs show wardogs.love -a wardogs-love`.
+
+**NOTE:** Between step 4 and a certificate issue, the site returns Cloudflare error 526. Full
+(strict) TLS rejects the connection until Fly holds a valid certificate for the hostname.
 
 ## Deploy
 

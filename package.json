@@ -75,7 +75,7 @@
     "build:agents": "bash scripts/build-agents-md.sh agents/shared.md agents/project.md AGENTS.md",
     "check:agents": "bun run build:agents && git diff --exit-code AGENTS.md",
     "codegen": "turbo run codegen typegen",
-    "deadcode": "knip",
+    "deadcode": "turbo run codegen typegen && knip",
     "dev": "turbo run dev --filter=@wardogs-love/web",
     "e2e": "turbo run e2e",
     "format": "oxfmt . && format-codemod --quiet .",

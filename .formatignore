@@ -3,3 +3,5 @@ libs/design/styled-system/styled-system/**
 **/src/styled-system/**
 **/node_modules/**
 **/dist/**
+AGENTS.md
+agents/shared.md
