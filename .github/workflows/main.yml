@@ -1,0 +1,85 @@
+name: Main
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+# Concurrency is per job. A cancelled flyctl run in the middle of a bluegreen
+# rollout leaves the green machines behind, so a deploy queues instead.
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: ${{ github.workflow }}-checks-${{ github.ref }}
+      cancel-in-progress: true
+    env:
+      LEFTHOOK: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: .bun-version
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Audit
+        run: bun run audit
+
+      - name: Dead Code
+        run: bun run deadcode
+
+      - name: Check Formatting
+        run: bun run format:check
+
+      - name: Check AGENTS.md
+        run: bun run check:agents
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Unit Tests
+        run: bun run test
+
+  e2e:
+    uses: ./.github/workflows/e2e.yml
+
+  deploy:
+    name: Deploy
+    needs: [checks, e2e]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    concurrency:
+      group: ${{ github.workflow }}-deploy
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1 # 1.6
+
+      # The image builds on Fly's remote builder, with the repo root as the
+      # build context. GIT_SHA reaches every machine, and /health reports it.
+      - name: Deploy
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: >-
+          flyctl deploy --remote-only --config apps/web/fly.toml --dockerfile apps/web/Dockerfile
+          --env GIT_SHA=${{ github.sha }}

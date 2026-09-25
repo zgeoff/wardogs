@@ -12,6 +12,7 @@ libs/design/styled-system/styled-system
 .claude
 .worktrees
 docs
-infra
+infra/*
+!infra/package.json
 **/.env
 **/.env.*

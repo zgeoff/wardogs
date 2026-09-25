@@ -21,8 +21,11 @@ planner (`docs/fob-tool.md`).
 ## Commands
 
 - `bun run dev` starts the app on port 3000; `bun run ladle` starts the component stories.
-- `bun run lint`, `bun run typecheck`, `bun run test`, `bun run format:check`, `bun run deadcode`
-  are the checks CI runs. `bun run e2e` builds the app and runs Playwright.
+- `bun run lint`, `bun run typecheck`, `bun run test`, `bun run format:check`, `bun run deadcode`,
+  `bun run audit`, and `bun run check:agents` are the checks CI runs. `bun run e2e` builds the app
+  and runs Playwright.
+- `AGENTS.md` is generated: edit `agents/project.md`, then run `bun run build:agents`.
+  `check:agents` fails when the two drift.
 - Codegen output (`styled-system/`, `routeTree.gen.ts`) is gitignored; `bun run codegen` writes it,
   and every check that needs it depends on it through turbo.
 
@@ -41,9 +44,21 @@ planner (`docs/fob-tool.md`).
 Load the `testing` skill before writing a test. Pure libraries run under the root preload; React
 packages add `@zgeoff/bun-test-react` (and its `zustand` preload) in their own `bunfig.toml`.
 
+## CI and deploy
+
+- `pr.yml` (delivered by repo-sync) runs the shared checks. The `BUN_CHECK_SCRIPTS` repo variable
+  adds `check:agents` to the standard list.
+- `e2e.yml` runs Playwright on a pull request, since the shared checks do not.
+- `main.yml` runs the checks and e2e on a push to `main`, then deploys to Fly with
+  `flyctl deploy --remote-only` from the repo root. `GIT_SHA` reaches every machine, and `/health`
+  reports it.
+- `infra/` holds the Pulumi program for the Cloudflare side of `wardogs.love` (`infra/README.md`).
+
 ## Runtime
 
-Production runs the Start server build under Bun, served through `srvx` (`apps/web/server.ts`).
+Production runs the Start server build under Bun, served through `srvx` (`apps/web/server.ts`). The
+repo pins Bun 1.4.2 (`.bun-version`): Bun 1.3.10 fails to load `react-dom/server` under
+`NODE_ENV=production`.
 
 ## Function naming additions
 

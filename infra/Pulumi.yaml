@@ -1,0 +1,10 @@
+name: wardogs-infra
+runtime:
+  name: nodejs
+  options:
+    typescript: false
+description:
+  Cloudflare DNS, TLS, and caching for wardogs.love, with Pulumi state held in Cloudflare R2.
+config:
+  wardogs-infra:zoneName: wardogs.love
+  wardogs-infra:appHostname: wardogs-love.fly.dev

@@ -1,0 +1,50 @@
+# Runs the Playwright specs against the production build. The shared PR checks
+# do not run e2e, so this workflow runs beside them on a pull request, and the
+# Main workflow calls it before a deploy.
+name: E2E
+
+on:
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: e2e-${{ github.ref }}-${{ github.event_name }}
+      cancel-in-progress: true
+    env:
+      LEFTHOOK: 0
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version-file: .bun-version
+
+      - name: Install Dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Install E2E browsers
+        working-directory: apps/web-e2e
+        run: bunx playwright install --with-deps --only-shell chromium
+
+      - name: E2E Tests
+        id: e2e
+        run: bun run e2e
+
+      - name: Upload results of failed specs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: ${{ failure() && steps.e2e.outcome == 'failure' }}
+        with:
+          name: playwright-results
+          include-hidden-files: true
+          path: apps/web-e2e/.test-results

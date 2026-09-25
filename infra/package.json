@@ -1,0 +1,22 @@
+{
+  "name": "@wardogs-love/infra",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Pulumi program: Cloudflare DNS, TLS, and caching for wardogs.love, state in Cloudflare R2",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "preview": "op run --env-file=.env -- pulumi preview",
+    "up": "op run --env-file=.env -- pulumi up"
+  },
+  "dependencies": {
+    "@pulumi/cloudflare": "catalog:",
+    "@pulumi/pulumi": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@zgeoff/tsconfig": "catalog:",
+    "typescript": "catalog:"
+  }
+}

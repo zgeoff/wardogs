@@ -4,6 +4,7 @@
   "workspaces": {
     "packages": [
       "apps/*",
+      "infra",
       "libs/*/*"
     ],
     "catalog": {
@@ -18,6 +19,8 @@
       "@pandacss/preset-base": "2.0.0-beta.18",
       "@pandacss/preset-panda": "2.0.0-beta.18",
       "@playwright/test": "1.63.0",
+      "@pulumi/cloudflare": "6.17.0",
+      "@pulumi/pulumi": "3.253.0",
       "@react-three/drei": "10.7.8",
       "@react-three/fiber": "9.7.0",
       "@react-three/test-renderer": "9.1.1",
@@ -31,6 +34,7 @@
       "@tsconfig/strictest": "2.0.8",
       "@types/babel__core": "7.20.5",
       "@types/bun": "1.4.2",
+      "@types/node": "26.1.1",
       "@types/react": "19.3.0",
       "@types/react-dom": "19.3.0",
       "@types/three": "0.186.0",
@@ -69,6 +73,7 @@
     "audit": "bun audit",
     "build": "turbo run build",
     "build:agents": "bash scripts/build-agents-md.sh agents/shared.md agents/project.md AGENTS.md",
+    "check:agents": "bun run build:agents && git diff --exit-code AGENTS.md",
     "codegen": "turbo run codegen typegen",
     "deadcode": "knip",
     "dev": "turbo run dev --filter=@wardogs-love/web",

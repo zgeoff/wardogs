@@ -12,6 +12,9 @@
       "entry": ["src/routes/**/*.{ts,tsx}"],
       "ignoreDependencies": ["@fontsource/*"]
     },
+    "infra": {
+      "ignoreBinaries": ["op"]
+    },
     "libs/design/styled-system": {
       "ignoreDependencies": ["react"]
     },
