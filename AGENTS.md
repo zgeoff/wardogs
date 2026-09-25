@@ -212,3 +212,14 @@ packages add `@zgeoff/bun-test-react` (and its `zustand` preload) in their own `
 ## Runtime
 
 Production runs the Start server build under Bun, served through `srvx` (`apps/web/server.ts`).
+
+## Function naming additions
+
+The repo adds three verbs to the shared taxonomy, for the pure plan edits in `libs/wardogs/fob`.
+Each returns a new plan and never changes its argument.
+
+| Prefix   | Contract                              | Example              |
+| -------- | ------------------------------------- | -------------------- |
+| `add`    | a plan with the item appended         | `addPlacedPiece`     |
+| `move`   | a plan with the items offset          | `movePlacedPieces`   |
+| `rotate` | a plan with the items turned in place | `rotatePlacedPieces` |

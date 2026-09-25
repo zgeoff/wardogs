@@ -25,6 +25,48 @@
     // whole-prop forwarding is the idiom once no-destructured-params is on
     "react/jsx-props-no-spreading": "off",
     "react/jsx-max-depth": "off",
+    // the repo's additions to the function-naming taxonomy: pure plan edits in
+    // libs/wardogs/fob return a new plan, named for the edit they make
+    "zgeoff/function-verb": ["error", { "verbs": ["add", "move", "rotate"] }],
+    "typescript/prefer-readonly-parameter-types": [
+      "error",
+      {
+        "ignoreInferredTypes": true,
+        "allow": [
+          {
+            "from": "lib",
+            "name": [
+              "Event",
+              "KeyboardEvent",
+              "PointerEvent",
+              "MouseEvent",
+              "URL",
+              "Uint8Array",
+              "Error",
+              // genuinely immutable, but their members are method signatures, which the rule
+              // treats as mutable (typescript-eslint#8013)
+              "ReadonlySet",
+              "ReadonlyMap",
+              "Promise"
+            ]
+          },
+          { "from": "package", "name": "ReactNode", "package": "react" },
+          { "from": "package", "name": "RefObject", "package": "react" },
+          // live IndexedDB handles: transactions and stores mutate them, no readonly form
+          { "from": "package", "name": ["IDBPDatabase", "IDBPTransaction"], "package": "idb" },
+          // three.js scene-graph handles and r3f events wrap live mutable objects
+          {
+            "from": "package",
+            "name": ["Object3D", "Mesh", "OrthographicCamera", "PerspectiveCamera"],
+            "package": "three"
+          },
+          { "from": "package", "name": "ThreeEvent", "package": "@react-three/fiber" },
+          // the router instance mutates its own match and history state on every navigation
+          { "from": "package", "name": "AnyRouter", "package": "@tanstack/router-core" },
+          { "from": "package", "name": "ErrorComponentProps", "package": "@tanstack/router-core" }
+        ]
+      }
+    ],
     // stylesheets and test preloads are side-effect imports by design
     "import/no-unassigned-import": [
       "error",
