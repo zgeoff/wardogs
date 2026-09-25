@@ -1,0 +1,85 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "extends": ["./node_modules/@zgeoff/oxlint-config/oxlintrc.json"],
+  "plugins": ["typescript", "unicorn", "oxc", "import", "promise", "react", "jsx-a11y"],
+  "env": {
+    "browser": true,
+    "es2024": true
+  },
+  "settings": {
+    "react": {
+      "version": "19.3.0"
+    }
+  },
+  // ignorePatterns don't propagate through extends; each consumer declares its own
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/*.json",
+    "**/styled-system/**",
+    "**/routeTree.gen.ts"
+  ],
+  "rules": {
+    // React 19's automatic JSX runtime doesn't need React in scope
+    "react/react-in-jsx-scope": "off",
+    // whole-prop forwarding is the idiom once no-destructured-params is on
+    "react/jsx-props-no-spreading": "off",
+    "react/jsx-max-depth": "off",
+    // stylesheets and test preloads are side-effect imports by design
+    "import/no-unassigned-import": [
+      "error",
+      { "allow": ["@zgeoff/bun-test-extended", "fake-indexeddb/auto", "**/*.css"] }
+    ]
+  },
+  "overrides": [
+    {
+      // one suite per module with inline data: length follows coverage, not complexity
+      "files": ["**/*.test.ts", "**/*.test.tsx"],
+      "rules": {
+        "max-lines": "off",
+        "typescript/no-non-null-assertion": "off"
+      }
+    },
+    {
+      // oxfmt owns comment placement in JSX attribute lists
+      "files": ["**/*.tsx"],
+      "rules": {
+        "@stylistic/lines-around-comment": "off"
+      }
+    },
+    {
+      // playwright resolves fixtures by parsing the destructure in a test's first parameter
+      "files": ["**/apps/web-e2e/**"],
+      "rules": {
+        "zgeoff/no-destructured-params": "off"
+      }
+    },
+    {
+      // react-three-fiber props set three.js object fields, not DOM attributes
+      "files": ["**/libs/wardogs/fob-editor/**"],
+      "rules": {
+        "react/no-unknown-property": [
+          "error",
+          {
+            "ignore": [
+              "args",
+              "attach",
+              "castShadow",
+              "color",
+              "depthWrite",
+              "intensity",
+              "makeDefault",
+              "opacity",
+              "position",
+              "receiveShadow",
+              "rotation",
+              "scale",
+              "transparent",
+              "zoom"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

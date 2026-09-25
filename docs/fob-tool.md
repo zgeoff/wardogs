@@ -1,7 +1,8 @@
 # FOB planner
 
-The first tool in wardogs ❤️: a plain 3D planner for a Wardogs forward operating base (FOB). A player
-lays out pieces on a grid, splits the build into stages, and reads the supply cost of each stage.
+The first tool in wardogs ❤️: a plain 3D planner for a Wardogs forward operating base (FOB). A
+player lays out pieces on a grid, splits the build into stages, and reads the supply cost of each
+stage.
 
 ## What it models
 
@@ -16,15 +17,15 @@ them from experience.
 - **Height.** A new piece lands on the highest surface under its footprint. The player raises or
   lowers it in 0.75 m steps.
 - **Intersection.** Two pieces never overlap in 3D. This is the only rule the planner enforces.
-- **FOB area.** A FOB claims a 120 m × 120 m square centred on it and turned with it. A piece outside
-  every FOB square shows a warning; the planner does not block it.
+- **FOB area.** A FOB claims a 120 m × 120 m square centred on it and turned with it. A piece
+  outside every FOB square shows a warning; the planner does not block it.
 
 ## Stages
 
-A plan is one list of pieces. Each piece records the stage it is built in, from 1 to the plan's stage
-count. Stage *n* shows every piece built in stages 1 to *n*, with the pieces from earlier stages
-dimmed. The planner shows the supply cost of each stage and the running total. Moving a piece to
-another stage, or deleting a stage, never copies a piece.
+A plan is one list of pieces. Each piece records the stage it is built in, from 1 to the plan's
+stage count. Stage _n_ shows every piece built in stages 1 to _n_, with the pieces from earlier
+stages dimmed. The planner shows the supply cost of each stage and the running total. Moving a piece
+to another stage, or deleting a stage, never copies a piece.
 
 ## Pieces
 

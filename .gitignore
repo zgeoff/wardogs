@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.turbo/
+.tanstack/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+styled-system/
+routeTree.gen.ts
+.test-results/
+playwright-report/

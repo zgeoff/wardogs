@@ -1,0 +1,34 @@
+# Git hooks. pre-commit fixes staged files only (fast); pre-push gates the whole tree.
+
+pre-commit:
+  piped: true
+  jobs:
+    - name: oxlint --fix
+      glob: '*.{js,mjs,cjs,jsx,ts,mts,cts,tsx}'
+      run: bunx oxlint --fix --no-error-on-unmatched-pattern {staged_files}
+      stage_fixed: true
+    - name: oxfmt
+      glob: '*.{js,mjs,cjs,jsx,ts,mts,cts,tsx,json,jsonc,md,css,yml,yaml,html}'
+      run: bunx oxfmt --no-error-on-unmatched-pattern {staged_files}
+      stage_fixed: true
+    - name: format-codemod
+      glob: '*.{ts,tsx}'
+      run: bunx format-codemod --quiet {staged_files}
+      stage_fixed: true
+
+commit-msg:
+  jobs:
+    - name: commitlint
+      run: bunx commitlint --edit {1}
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: format:check
+      run: bun run format:check
+    - name: lint
+      run: bun run lint
+    - name: typecheck
+      run: bun run typecheck
+    - name: test
+      run: bun run test

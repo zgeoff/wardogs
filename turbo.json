@@ -1,0 +1,37 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "envMode": "loose",
+  "tasks": {
+    "codegen": {
+      "dependsOn": ["^codegen"],
+      "outputs": ["styled-system/**", "src/styled-system/**"]
+    },
+    "typegen": {
+      "outputs": ["src/routeTree.gen.ts"]
+    },
+    "build": {
+      "dependsOn": ["^build", "codegen", "typegen"],
+      "outputs": ["dist/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["codegen", "typegen", "^codegen"]
+    },
+    "test": {
+      "dependsOn": ["codegen", "typegen", "^codegen"]
+    },
+    "e2e": {
+      "dependsOn": ["@wardogs-love/web#build"],
+      "cache": false
+    },
+    "dev": {
+      "dependsOn": ["codegen", "^codegen"],
+      "cache": false,
+      "persistent": true
+    },
+    "ladle": {
+      "dependsOn": ["codegen", "^codegen"],
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
