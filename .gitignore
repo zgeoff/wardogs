@@ -11,3 +11,6 @@ libs/design/styled-system/styled-system/
 routeTree.gen.ts
 .test-results/
 playwright-report/
+
+# git worktrees, one per branch (AGENTS.md)
+.worktrees/
