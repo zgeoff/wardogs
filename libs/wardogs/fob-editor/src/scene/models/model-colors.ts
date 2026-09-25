@@ -20,6 +20,8 @@ export const modelColors = {
   rubber: '#262829',
   brass: '#8a6a3c',
   grey: '#767b80',
+  gateBlue: '#8fb4c8',
+  gateBlueDark: '#6f93a8',
   greyDark: '#5b6065',
 } as const;
 

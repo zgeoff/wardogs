@@ -6,7 +6,7 @@ import type { PieceModelProps } from './types';
 const LEAF_HEIGHT = 3;
 const coil = buildCoilGeometry({ length: 5.7, radius: 0.32, turns: 28 });
 
-// a two-leaf timber gate across the piece's depth, with razor wire strung on posts above it
+// a two-leaf baby-blue steel gate across the piece's depth, with razor wire strung on posts above it
 export function GateModel(props: PieceModelProps) {
   const size = props.size;
   const postZ = [-(size.depth / 2 - 0.1), 0, size.depth / 2 - 0.1];
@@ -17,13 +17,13 @@ export function GateModel(props: PieceModelProps) {
         centre={[0, LEAF_HEIGHT / 2, 0]}
         opacity={props.opacity}
         size={[0.2, LEAF_HEIGHT, size.depth - 0.1]}
-        tone="wood"
+        tone="gateBlue"
       />
       <ModelBox
         centre={[0, LEAF_HEIGHT / 2, 0]}
         opacity={props.opacity}
         size={[0.24, LEAF_HEIGHT, 0.08]}
-        tone="woodDark"
+        tone="gateBlueDark"
       />
       {postZ.map((z) => (
         <ModelBox
