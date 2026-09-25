@@ -2,7 +2,7 @@ import { Quaternion, Vector3 } from 'three';
 import { ModelBox } from './model-box';
 import type { PieceModelProps } from './types';
 
-const BEAM = 0.14;
+const BEAM = 0.2;
 const BEAM_LENGTH = 2.6;
 
 // three beams at right angles, tipped so one corner of the frame points up and it stands on three

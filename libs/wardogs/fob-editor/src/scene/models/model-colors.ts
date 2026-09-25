@@ -13,6 +13,10 @@ export const modelColors = {
   drab: '#4b5339',
   crate: '#6b6f5a',
   accent: '#f5b04a',
+  sheet: '#9b8a66',
+  tank: '#3c4a3b',
+  rubber: '#262829',
+  brass: '#8a6a3c',
 } as const;
 
 export type ModelTone = keyof typeof modelColors;

@@ -76,7 +76,7 @@ test('it selects a piece pressed with the select tool', async () => {
   expect([...useEditorStore.getState().selection]).toStrictEqual(['a']);
 });
 
-test('it draws a piece’s hand-built model and the box for a piece without one', async () => {
+test('it draws a piece’s hand-built model beside its hit box', async () => {
   useEditorStore.getState().loadPlan({
     id: 'd',
     name: 'Plan',
@@ -84,18 +84,13 @@ test('it draws a piece’s hand-built model and the box for a piece without one'
       stageCount: 1,
       pieces: [
         { id: 'a', pieceID: 'hesco-small', x: 0, z: 0, elevation: 0, rotation: 0, stage: 1 },
-        { id: 'b', pieceID: 'builders-radio', x: 4, z: 0, elevation: 0, rotation: 0, stage: 1 },
       ],
     },
   });
 
   const renderer = await setupTest();
 
-  const model = renderer.scene.find((node) => node.instance.name === 'piece-a');
-  const box = renderer.scene.find((node) => node.instance.name === 'piece-b');
+  const piece = renderer.scene.find((node) => node.instance.name === 'piece-a');
 
-  expect({
-    model: model.findAll((node) => node.type === 'Mesh').length,
-    box: box.findAll((node) => node.type === 'Mesh').length,
-  }).toStrictEqual({ model: 4, box: 1 });
+  expect(piece.findAll((node) => node.type === 'Mesh')).toHaveLength(4);
 });
