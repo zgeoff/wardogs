@@ -40,9 +40,11 @@ totals follow the current catalog.
 ## Rendering
 
 The planner renders with react-three-fiber. The default camera looks straight down with an
-orthographic projection; an orbit camera shows the base in 3D. Each piece renders as a box of its
-size, coloured by category; a piece can name a model file instead, and the renderer loads it in
-place of the box.
+orthographic projection; an orbit camera shows the base in 3D. Each piece renders as a simple model
+of our own, built from boxes and other primitives to fill its collision box. The models live in
+`libs/wardogs/fob-editor/src/scene/models`, and a piece without one renders as a box of its size,
+coloured by category. A click anywhere in a piece's collision box selects it, including a gap in a
+model such as barbed wire.
 
 The `/fob` route renders on the client only. The rest of the site renders on the server.
 

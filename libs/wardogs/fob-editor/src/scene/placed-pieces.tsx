@@ -8,6 +8,7 @@ import { useEditorStore } from '../state/editor-store';
 import type { EditorState } from '../state/types';
 import { categoryColors, sceneColors } from './category-colors';
 import { getPieceTransform } from './get-piece-transform';
+import { pieceModels } from './models/piece-models';
 
 // every piece built by the stage on screen: earlier stages dim, the stage on screen shows solid,
 // and a selection being dragged draws at its drop position
@@ -65,7 +66,6 @@ interface PieceMeshProps {
 
 function PieceMesh(props: PieceMeshProps) {
   const transform = getPieceTransform(props.piece);
-  const category = getPiece(props.piece.pieceID).category;
 
   const handlePointerDown = (event: ThreeEvent<PointerEvent>) => {
     if (!props.isSelectable || event.button !== 0) {
@@ -94,24 +94,43 @@ function PieceMesh(props: PieceMeshProps) {
     });
   };
 
+  const piece = getPiece(props.piece.pieceID);
+  const Model = props.isBlocked ? undefined : pieceModels[piece.id];
+  const edgeColor = pickEdgeColor(props, Model === undefined);
+
+  // the group carries the pointer handler; its box takes every hit, drawn as the piece when it has
+  // no model (or while a drag is blocked) and left invisible otherwise, so a click in a gap of the
+  // barbed wire still selects it
   return (
-    <mesh
+    <group
       name={`piece-${props.piece.id}`}
       onPointerDown={handlePointerDown}
       position={[...transform.position]}
     >
-      <boxGeometry args={[...transform.size]} />
-      <meshStandardMaterial
-        color={props.isBlocked ? sceneColors.invalid : categoryColors[category]}
-        opacity={props.isDimmed ? 0.35 : 1}
-        transparent={props.isDimmed}
-      />
-      <Edges color={pickEdgeColor(props)} />
-    </mesh>
+      <mesh>
+        <boxGeometry args={[...transform.size]} />
+        {Model === undefined ? (
+          <meshStandardMaterial
+            color={props.isBlocked ? sceneColors.invalid : categoryColors[piece.category]}
+            opacity={props.isDimmed ? 0.35 : 1}
+            transparent={props.isDimmed}
+          />
+        ) : (
+          <meshBasicMaterial visible={false} />
+        )}
+        {edgeColor === null ? null : <Edges color={edgeColor} />}
+      </mesh>
+      {Model === undefined ? null : (
+        <group position={[0, -piece.size.height / 2, 0]} rotation={[0, transform.rotationY, 0]}>
+          <Model opacity={props.isDimmed ? 0.35 : 1} size={piece.size} />
+        </group>
+      )}
+    </group>
   );
 }
 
-function pickEdgeColor(props: PieceMeshProps): string {
+// a box always has an outline; a model has one only to show it is selected or outside the FOB area
+function pickEdgeColor(props: PieceMeshProps, isBox: boolean): string | null {
   if (props.isSelected) {
     return sceneColors.selected;
   }
@@ -120,5 +139,5 @@ function pickEdgeColor(props: PieceMeshProps): string {
     return sceneColors.outsideArea;
   }
 
-  return '#000000';
+  return isBox ? '#000000' : null;
 }

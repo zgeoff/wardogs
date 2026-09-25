@@ -12,5 +12,9 @@ test('it centres the mesh on the collision box', () => {
     stage: 1,
   });
 
-  expect(transform).toStrictEqual({ position: [3, 3.06, 0.75], size: [6, 3.12, 1.5] });
+  expect(transform).toStrictEqual({
+    position: [3, 3.06, 0.75],
+    size: [6, 3.12, 1.5],
+    rotationY: -Math.PI / 2,
+  });
 });

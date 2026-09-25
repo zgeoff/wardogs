@@ -7,7 +7,8 @@ The first tool is the **FOB planner** (`/fob`). It lays out a forward operating 
 grid in 3D, splits the build into stages, and shows the supply cost of each stage.
 [`docs/fob-tool.md`](docs/fob-tool.md) describes what it models and what it leaves out.
 
-The planner renders each piece as a box of its size. The game's models are not licensed for reuse.
+The planner draws each piece as a simple model of our own, sized to its collision box. The game's
+models are not licensed for reuse.
 
 ## Run it
 

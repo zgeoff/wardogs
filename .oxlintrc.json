@@ -68,7 +68,13 @@
           // three.js scene-graph handles and r3f events wrap live mutable objects
           {
             "from": "package",
-            "name": ["Object3D", "Mesh", "OrthographicCamera", "PerspectiveCamera"],
+            "name": [
+              "BufferGeometry",
+              "Object3D",
+              "Mesh",
+              "OrthographicCamera",
+              "PerspectiveCamera"
+            ],
             "package": "three"
           },
           { "from": "package", "name": "ThreeEvent", "package": "@react-three/fiber" },
@@ -128,15 +134,19 @@
               "castShadow",
               "color",
               "depthWrite",
+              "geometry",
               "intensity",
               "makeDefault",
+              "material",
               "opacity",
               "position",
+              "quaternion",
               "raycast",
               "receiveShadow",
               "rotation",
               "scale",
               "transparent",
+              "visible",
               "zoom"
             ]
           }
