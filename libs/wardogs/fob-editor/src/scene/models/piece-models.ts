@@ -13,8 +13,6 @@ import { HescoBlock } from './hesco-block';
 import { HescoWall } from './hesco-wall';
 import { LoudspeakerModel } from './loudspeaker-model';
 import { MortarModel } from './mortar-model';
-import { NetRoofModel } from './net-roof-model';
-import { PlankFloorModel } from './plank-floor-model';
 import { RadioModel } from './radio-model';
 import { ReconTentModel } from './recon-tent-model';
 import { ReconTowerModel } from './recon-tower-model';
@@ -35,8 +33,6 @@ export const pieceModels: Readonly<Record<string, PieceModel>> = {
   gate: GateModel,
   door: DoorModel,
   bunker: BunkerModel,
-  'bunker-floor': PlankFloorModel,
-  'bunker-roof': NetRoofModel,
   'indirect-fire-shelter': FireShelterModel,
   'sandbag-wall': SandbagWallModel,
   'bremer-wall': BremerWallModel,
