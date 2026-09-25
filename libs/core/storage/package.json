@@ -1,0 +1,23 @@
+{
+  "name": "@wardogs-love/storage",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "idb": "catalog:"
+  },
+  "devDependencies": {
+    "@types/bun": "catalog:",
+    "@zgeoff/bun-test-extended": "catalog:",
+    "@zgeoff/tsconfig": "catalog:",
+    "fake-indexeddb": "catalog:",
+    "typescript": "catalog:"
+  }
+}
