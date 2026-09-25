@@ -4,5 +4,5 @@
     "types": ["bun"]
   },
   "files": [],
-  "include": ["playwright.config.ts", "specs/**/*.ts"]
+  "include": ["playwright.config.ts", "specs/**/*.ts", "src/**/*.ts"]
 }

@@ -74,7 +74,9 @@
           { "from": "package", "name": "ThreeEvent", "package": "@react-three/fiber" },
           // the router instance mutates its own match and history state on every navigation
           { "from": "package", "name": "AnyRouter", "package": "@tanstack/router-core" },
-          { "from": "package", "name": "ErrorComponentProps", "package": "@tanstack/router-core" }
+          { "from": "package", "name": "ErrorComponentProps", "package": "@tanstack/router-core" },
+          // a live browser page handle: driver connection and event state, no readonly form
+          { "from": "package", "name": "Page", "package": "playwright-core" }
         ]
       }
     ],
@@ -108,7 +110,9 @@
       // playwright resolves fixtures by parsing the destructure in a test's first parameter
       "files": ["**/apps/web-e2e/**"],
       "rules": {
-        "zgeoff/no-destructured-params": "off"
+        "zgeoff/no-destructured-params": "off",
+        // a user journey reads as one run of steps
+        "max-statements": "off"
       }
     },
     {

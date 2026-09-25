@@ -1,7 +1,7 @@
 import { Grid, MapControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import type { ComponentRef } from 'react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { MOUSE } from 'three';
 import { useEditorStore } from '../state/editor-store';
 import { BoxSelectRect } from './box-select-rect';
@@ -21,10 +21,17 @@ export function PlannerCanvas() {
   const cameraMode = useEditorStore((state) => state.cameraMode);
   const controls = useRef<ComponentRef<typeof MapControls>>(null);
 
+  // tells automation (and anyone curious) when the scene takes pointer input
+  const [isReady, setIsReady] = useState(false);
+
   return (
     <Canvas
       camera={{ far: 2000, near: 0.1, position: [0, 400, 0.001], zoom: 6 }}
+      data-ready={isReady}
       data-testid="planner-canvas"
+      onCreated={() => {
+        setIsReady(true);
+      }}
       onContextMenu={(event) => {
         event.preventDefault();
       }}
