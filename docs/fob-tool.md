@@ -1,0 +1,67 @@
+# FOB planner
+
+The first tool in wardogs ❤️: a plain 3D planner for a Wardogs forward operating base (FOB). A player
+lays out pieces on a grid, splits the build into stages, and reads the supply cost of each stage.
+
+## What it models
+
+The planner models space, not the game's building rules. The game snaps pieces through sockets and
+limits height through a build order; both have edge cases that the most interesting builds rely on,
+and an emulation of them blocks those builds. So the planner leaves them out, and the player applies
+them from experience.
+
+- **Grid.** Every piece sits on a 0.75 m grid in world space. The game's pieces measure in 1.5 m
+  cubes, and the 0.75 m grid admits the half-cube offsets that players build with.
+- **Rotation.** A piece turns in 90° steps.
+- **Height.** A new piece lands on the highest surface under its footprint. The player raises or
+  lowers it in 0.75 m steps.
+- **Intersection.** Two pieces never overlap in 3D. This is the only rule the planner enforces.
+- **FOB area.** A FOB claims a 120 m × 120 m square centred on it and turned with it. A piece outside
+  every FOB square shows a warning; the planner does not block it.
+
+## Stages
+
+A plan is one list of pieces. Each piece records the stage it is built in, from 1 to the plan's stage
+count. Stage *n* shows every piece built in stages 1 to *n*, with the pieces from earlier stages
+dimmed. The planner shows the supply cost of each stage and the running total. Moving a piece to
+another stage, or deleting a stage, never copies a piece.
+
+## Pieces
+
+The catalog in `libs/wardogs/game-data` holds each buildable piece: its name, category, size in
+metres, supply cost, and hit points. Every entry records the game version and source it came from,
+and whether it has been checked in the game. Costs are data, so a rebalance changes the catalog, not
+the code.
+
+A saved plan stores piece ids, positions, rotations, and stages. It does not store costs, so its
+totals follow the current catalog.
+
+## Rendering
+
+The planner renders with react-three-fiber. The default camera looks straight down with an
+orthographic projection; an orbit camera shows the base in 3D. Each piece renders as a box of its
+size, coloured by category; a piece can name a model file instead, and the renderer loads it in
+place of the box.
+
+The `/fob` route renders on the client only. The rest of the site renders on the server.
+
+## Editing
+
+- Pick a piece from the palette, then click to place it. `R` turns it, and `PageUp`/`PageDown` raise
+  and lower it.
+- Select a piece to move, turn, restage, or delete it. Drag a box to select many.
+- Undo and redo cover every change.
+- Pan and zoom in both cameras.
+
+## Saving and sharing
+
+- Plans save to IndexedDB in the browser, with no account. A player keeps many named plans.
+- A plan exports to a JSON file and imports from one.
+- A share link carries the whole plan in the URL fragment, so sharing needs no server.
+- Every saved plan is a versioned document, `{ id, tool, schemaVersion, data }`, so a later schema
+  migrates old plans.
+
+## Left out
+
+Terrain and map sites, sightlines and an on-foot view, vehicles, socket snapping, free angles, stack
+limits and build order, prefabs, accounts, a community hub, and co-editing.
