@@ -1,0 +1,17 @@
+**/node_modules
+**/dist
+**/.turbo
+**/.tanstack
+libs/design/styled-system/styled-system
+**/src/styled-system
+**/routeTree.gen.ts
+**/.test-results
+**/playwright-report
+.git
+.github
+.claude
+.worktrees
+docs
+infra
+**/.env
+**/.env.*

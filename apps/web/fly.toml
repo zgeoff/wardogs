@@ -1,0 +1,28 @@
+# Deployed from the repo root: flyctl deploy --config apps/web/fly.toml
+app = 'wardogs-love'
+primary_region = 'syd'
+
+[build]
+dockerfile = 'Dockerfile'
+
+[deploy]
+strategy = 'bluegreen'
+
+[http_service]
+internal_port = 3000
+force_https = true
+auto_stop_machines = 'suspend'
+auto_start_machines = true
+min_machines_running = 0
+
+[[http_service.checks]]
+grace_period = '5s'
+interval = '15s'
+method = 'GET'
+path = '/health'
+timeout = '2s'
+
+[[vm]]
+memory = '256mb'
+cpu_kind = 'shared'
+cpus = 1
