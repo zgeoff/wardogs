@@ -24,12 +24,15 @@ export function buildPlacementActions(api: EditorAPI): PlacementActions {
       api.set({ tool: 'place', palettePieceID: pieceID, ghostLift: 0, selection: new Set() });
     },
     cancelTool: () => {
-      api.set({ tool: 'select', palettePieceID: null, ghostLift: 0 });
+      api.set({ tool: 'select', palettePieceID: null, ghostLift: 0, paint: null });
     },
 
-    // Esc or a right click: stop placing, or with the select tool, let go of the selection
+    // Esc or a right click: drop a paint stroke in progress, stop placing, or with the select tool,
+    // let go of the selection
     resetTool: () => {
-      if (api.get().tool === 'place') {
+      if (api.get().paint !== null) {
+        api.set({ paint: null });
+      } else if (api.get().tool === 'place') {
         api.get().cancelTool();
       } else {
         api.get().clearSelection();

@@ -1,11 +1,10 @@
 import type { ThreeEvent } from '@react-three/fiber';
 import { useEditorStore } from '../state/editor-store';
-import { findGhostCell } from '../state/find-ghost-cell';
 
 const GROUND_SIZE = 4000;
 
-// an invisible plane at ground level that turns pointer positions into grid actions: placing the
-// picked piece, or starting and ending a box select or a drag
+// an invisible plane at ground level that turns pointer positions into grid actions: painting
+// copies of the picked piece, or starting and ending a box select or a drag
 export function Ground() {
   return (
     <mesh
@@ -38,15 +37,18 @@ function handlePointerDown(event: ThreeEvent<PointerEvent>) {
     return;
   }
 
-  const cell = findGhostCell(state.palettePieceID, state.ghostRotation, point);
-
-  if (cell !== null) {
-    state.placePiece(cell);
-  }
+  state.startPaint(point);
 }
 
 function handlePointerMove(event: ThreeEvent<PointerEvent>) {
-  useEditorStore.getState().setPointer({ x: event.point.x, z: event.point.z });
+  const state = useEditorStore.getState();
+  const point = { x: event.point.x, z: event.point.z };
+
+  state.setPointer(point);
+
+  if (state.paint !== null) {
+    state.updatePaint(point, event.shiftKey);
+  }
 }
 
 function handlePointerUp(event: ThreeEvent<PointerEvent>) {
@@ -57,7 +59,12 @@ function handlePointerUp(event: ThreeEvent<PointerEvent>) {
   const state = useEditorStore.getState();
 
   state.setPointer({ x: event.point.x, z: event.point.z });
-  state.endGesture();
+
+  if (state.paint === null) {
+    state.endGesture();
+  } else {
+    state.endPaint();
+  }
 }
 
 function handlePointerLeave() {

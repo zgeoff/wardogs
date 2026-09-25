@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { buildEditActions } from './build-edit-actions';
 import { buildInitialEditorState } from './build-initial-editor-state';
+import { buildPaintActions } from './build-paint-actions';
 import { buildPlacementActions } from './build-placement-actions';
 import { buildSelectionActions } from './build-selection-actions';
 import { buildViewActions } from './build-view-actions';
@@ -12,6 +13,7 @@ export const useEditorStore = create<EditorStore>()((set, get) => {
   return {
     ...buildInitialEditorState(),
     ...buildPlacementActions(api),
+    ...buildPaintActions(api),
     ...buildEditActions(api),
     ...buildSelectionActions(api),
     ...buildViewActions(api),

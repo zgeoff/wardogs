@@ -52,6 +52,10 @@ The `/fob` route renders on the client only. The rest of the site renders on the
 
 - Pick a piece from the palette, then click to place it. `R` turns it, and `PageUp`/`PageDown` raise
   and lower it.
+- Drag to paint: a copy lands on each footprint-sized step the pointer passes through, and the drag
+  places them all as one change. Hold `Shift` to keep the copies on a straight line along the longer
+  axis. A copy rests on whatever is under it, and one that would intersect a piece is skipped. A
+  right click or `Esc` during a drag drops it.
 - A right click, or `Esc`, stops placing; with nothing to place, it clears the selection. A right
   drag still pans the camera.
 - `D` duplicates: the selected piece goes on the cursor, turned the same way, to place more of it.

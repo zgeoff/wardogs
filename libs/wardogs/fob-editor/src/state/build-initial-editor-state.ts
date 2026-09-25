@@ -19,5 +19,6 @@ export function buildInitialEditorState(): EditorState {
     frameRequest: 0,
     pointer: null,
     gesture: null,
+    paint: null,
   };
 }

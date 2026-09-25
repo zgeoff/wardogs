@@ -38,7 +38,10 @@ export function StatusBar() {
       {tool === 'place' ? (
         <>
           <span className={hint}>
-            <Kbd>click</Kbd> place
+            <Kbd>click</Kbd>/<Kbd>drag</Kbd> place
+          </span>
+          <span className={hint}>
+            <Kbd>Shift</Kbd> drag in a line
           </span>
           <span className={hint}>
             <Kbd>R</Kbd> rotate

@@ -21,6 +21,15 @@ export interface CellOffset {
   readonly z: number;
 }
 
+// a place-tool drag: the cell it started on, the step between copies (the piece's footprint), the
+// steps the pointer has passed through, and the cells a copy lands on when the drag ends
+interface PaintStroke {
+  readonly origin: CellOffset;
+  readonly stride: CellOffset;
+  readonly trail: readonly CellOffset[];
+  readonly cells: readonly CellOffset[];
+}
+
 export interface EditorState {
   readonly documentID: string;
   readonly name: string;
@@ -48,6 +57,7 @@ export interface EditorState {
   // where the pointer meets the ground, in metres, while it is over the scene
   readonly pointer: GroundPoint | null;
   readonly gesture: Gesture | null;
+  readonly paint: PaintStroke | null;
 }
 
 export interface LoadedPlan {
@@ -67,6 +77,9 @@ export interface EditorActions {
   readonly pickSelectedPiece: () => boolean;
   readonly buildGhost: (cell: CellOffset) => PlacedPiece | null;
   readonly placePiece: (cell: CellOffset) => boolean;
+  readonly startPaint: (point: GroundPoint) => void;
+  readonly updatePaint: (point: GroundPoint, isLocked: boolean) => void;
+  readonly endPaint: () => number;
   readonly rotateGhost: () => void;
   readonly liftGhost: (metres: number) => void;
   readonly selectPieces: (ids: readonly string[], mode: SelectMode) => void;
