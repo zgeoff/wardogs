@@ -26,7 +26,7 @@ export function BunkerModel(props: PieceModelProps) {
             key={`${x}:${z}`}
             opacity={props.opacity}
             size={[segment, WALL_HEIGHT, WALL]}
-            tone="hesco"
+            tone="hescoDark"
           />
         )),
       )}
@@ -36,20 +36,20 @@ export function BunkerModel(props: PieceModelProps) {
           key={x}
           opacity={props.opacity}
           size={[WALL, WALL_HEIGHT, size.depth - 2 * WALL]}
-          tone="hesco"
+          tone="hescoDark"
         />
       ))}
       <ModelBox
         centre={[0, WALL_HEIGHT + DECK / 2, 0]}
         opacity={props.opacity}
         size={[size.width, DECK, size.depth]}
-        tone="wood"
+        tone="woodDark"
       />
       <ModelBox
         centre={[0, netTop, 0]}
         opacity={props.opacity}
         size={[size.width, 0.1, size.depth]}
-        tone="netting"
+        tone="nettingDark"
       />
       {[-1, 1].map((side) => (
         <ModelBox
@@ -57,7 +57,7 @@ export function BunkerModel(props: PieceModelProps) {
           key={`z${side}`}
           opacity={props.opacity}
           size={[size.width, skirtHeight, 0.05]}
-          tone="netting"
+          tone="nettingDark"
         />
       ))}
       {[-1, 1].map((side) => (
@@ -66,7 +66,7 @@ export function BunkerModel(props: PieceModelProps) {
           key={`x${side}`}
           opacity={props.opacity}
           size={[0.05, skirtHeight, size.depth]}
-          tone="netting"
+          tone="nettingDark"
         />
       ))}
     </group>

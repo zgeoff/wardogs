@@ -25,12 +25,12 @@ export function CIWSModel(props: PieceModelProps) {
         size={[size.width, DECK, size.depth]}
         tone="wood"
       />
-      <ModelBox centre={[0, DECK + 0.5, 0]} opacity={props.opacity} size={[2, 1, 2]} tone="tank" />
+      <ModelBox centre={[0, DECK + 0.5, 0]} opacity={props.opacity} size={[2, 1, 2]} tone="grey" />
       <ModelBox
         centre={[0, DECK + 1.65, 0]}
         opacity={props.opacity}
         size={[1.3, 1.3, 1.2]}
-        tone="tank"
+        tone="grey"
       />
       {[-1, 1].map((side) => (
         <ModelBox
@@ -38,7 +38,7 @@ export function CIWSModel(props: PieceModelProps) {
           key={side}
           opacity={props.opacity}
           size={[0.15, 1.2, 1]}
-          tone="drab"
+          tone="greyDark"
         />
       ))}
       <ModelCylinder
@@ -47,19 +47,19 @@ export function CIWSModel(props: PieceModelProps) {
         opacity={props.opacity}
         radius={RADOME}
         sides={16}
-        tone="tank"
+        tone="grey"
       />
       <ModelShape
         centre={[0, radomeBase + radomeLength, 0]}
         geometry={dome}
         opacity={props.opacity}
-        tone="tank"
+        tone="grey"
       />
       <ModelBox
         centre={[1.4, DECK + 0.55, 0.6]}
         opacity={props.opacity}
         size={[0.6, 1.1, 0.5]}
-        tone="drab"
+        tone="greyDark"
       />
       <ModelBox
         centre={[2.7, DECK + 0.2, 1]}
