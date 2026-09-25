@@ -47,11 +47,17 @@ Production runs the Start server build under Bun, served through `srvx` (`apps/w
 
 ## Function naming additions
 
-The repo adds three verbs to the shared taxonomy, for the pure plan edits in `libs/wardogs/fob`.
-Each returns a new plan and never changes its argument.
+The repo adds these verbs to the shared taxonomy. The plan edits in `libs/wardogs/fob` return a new
+plan and never change their argument; the editor's store actions change the store.
 
-| Prefix   | Contract                              | Example              |
-| -------- | ------------------------------------- | -------------------- |
-| `add`    | a plan with the item appended         | `addPlacedPiece`     |
-| `move`   | a plan with the items offset          | `movePlacedPieces`   |
-| `rotate` | a plan with the items turned in place | `rotatePlacedPieces` |
+| Prefix   | Contract                                                        | Example              |
+| -------- | --------------------------------------------------------------- | -------------------- |
+| `add`    | a plan with the item appended                                   | `addPlacedPiece`     |
+| `move`   | a plan with the items offset                                    | `movePlacedPieces`   |
+| `rotate` | a plan with the items turned in place                           | `rotatePlacedPieces` |
+| `place`  | put the picked piece into the plan                              | `placeGhost`         |
+| `lift`   | raise or lower something in the scene                           | `liftGhost`          |
+| `select` | change which pieces the select tool holds                       | `selectPieces`       |
+| `undo`   | step the plan back through its history; `redo` steps it forward | `undoPlanEdit`       |
+| `end`    | finish a pointer gesture and apply its result                   | `endGesture`         |
+| `skip`   | a stand-in that does nothing, for a hook a library requires     | `skipRaycast`        |

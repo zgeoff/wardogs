@@ -1,0 +1,7 @@
+[test]
+preload = [
+  "@zgeoff/bun-test-extended",
+  "fake-indexeddb/auto",
+  "@zgeoff/bun-test-react/zustand",
+  "@zgeoff/bun-test-react",
+]

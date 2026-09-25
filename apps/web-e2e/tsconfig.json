@@ -1,0 +1,8 @@
+{
+  "extends": "@zgeoff/tsconfig/react.json",
+  "compilerOptions": {
+    "types": ["bun"]
+  },
+  "files": [],
+  "include": ["playwright.config.ts", "specs/**/*.ts"]
+}

@@ -28,9 +28,13 @@
     // whole-prop forwarding is the idiom once no-destructured-params is on
     "react/jsx-props-no-spreading": "off",
     "react/jsx-max-depth": "off",
-    // the repo's additions to the function-naming taxonomy: pure plan edits in
-    // libs/wardogs/fob return a new plan, named for the edit they make
-    "zgeoff/function-verb": ["error", { "verbs": ["add", "move", "rotate"] }],
+    // the repo's additions to the function-naming taxonomy, listed in agents/project.md
+    "zgeoff/function-verb": [
+      "error",
+      {
+        "verbs": ["add", "end", "lift", "move", "place", "redo", "rotate", "select", "skip", "undo"]
+      }
+    ],
     "typescript/prefer-readonly-parameter-types": [
       "error",
       {
@@ -43,6 +47,10 @@
               "KeyboardEvent",
               "PointerEvent",
               "MouseEvent",
+              "EventTarget",
+              "Blob",
+              "File",
+              "Date",
               "URL",
               "Uint8Array",
               "Error",
@@ -86,10 +94,14 @@
       }
     },
     {
-      // oxfmt owns comment placement in JSX attribute lists
+      // oxfmt owns comment placement in JSX attribute lists; a component's length follows its
+      // markup, and a panel imports one module per widget, so the size caps don't fit here
       "files": ["**/*.tsx"],
       "rules": {
-        "@stylistic/lines-around-comment": "off"
+        "@stylistic/lines-around-comment": "off",
+        "max-lines-per-function": "off",
+        "max-statements": "off",
+        "import/max-dependencies": "off"
       }
     },
     {
@@ -116,6 +128,7 @@
               "makeDefault",
               "opacity",
               "position",
+              "raycast",
               "receiveShadow",
               "rotation",
               "scale",

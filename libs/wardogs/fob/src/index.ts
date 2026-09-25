@@ -10,6 +10,7 @@ export { CELL_SIZE, FOB_AREA_HALF_EXTENT, PLAN_SCHEMA_VERSION } from './constant
 export { decodePlan } from './decode-plan';
 export { encodePlan } from './encode-plan';
 export { getFootprint } from './get-footprint';
+export { hasCollision } from './has-collision';
 export { getRestingElevation } from './get-resting-elevation';
 export { isOutsideFOBArea } from './is-outside-fob-area';
 export { movePlacedPieces } from './move-placed-pieces';

@@ -17,6 +17,7 @@
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
     "@wardogs-love/design-system": "workspace:*",
+    "@wardogs-love/fob-editor": "workspace:*",
     "@wardogs-love/panda-preset": "workspace:*",
     "@wardogs-love/styled-system": "workspace:*",
     "react": "catalog:",

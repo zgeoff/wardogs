@@ -1,5 +1,5 @@
 {
-  "name": "@wardogs-love/design-system",
+  "name": "@wardogs-love/fob-editor",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -7,36 +7,35 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "codegen": "panda cssgen",
-    "ladle": "ladle serve",
     "test": "bun test",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@ark-ui/react": "catalog:",
-    "@wardogs-love/panda-preset": "workspace:*",
+    "@react-three/drei": "catalog:",
+    "@react-three/fiber": "catalog:",
+    "@wardogs-love/design-system": "workspace:*",
+    "@wardogs-love/fob": "workspace:*",
+    "@wardogs-love/game-data": "workspace:*",
+    "@wardogs-love/storage": "workspace:*",
     "@wardogs-love/styled-system": "workspace:*",
-    "react": "catalog:"
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "three": "catalog:",
+    "zustand": "catalog:"
   },
   "devDependencies": {
-    "@fontsource/chakra-petch": "catalog:",
-    "@fontsource/ibm-plex-mono": "catalog:",
-    "@fontsource/ibm-plex-sans": "catalog:",
-    "@ladle/react": "catalog:",
-    "@pandacss/dev": "catalog:",
+    "@react-three/test-renderer": "catalog:",
     "@testing-library/react": "catalog:",
     "@testing-library/user-event": "catalog:",
     "@types/bun": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "@vitejs/plugin-react": "catalog:",
+    "@types/three": "catalog:",
     "@zgeoff/bun-test-extended": "catalog:",
     "@zgeoff/bun-test-react": "catalog:",
     "@zgeoff/tsconfig": "catalog:",
-    "autoprefixer": "catalog:",
-    "postcss": "catalog:",
-    "react-dom": "catalog:",
-    "typescript": "catalog:",
-    "vite": "catalog:"
+    "fake-indexeddb": "catalog:",
+    "idb": "catalog:",
+    "typescript": "catalog:"
   }
 }

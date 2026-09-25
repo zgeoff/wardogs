@@ -1,8 +1,19 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   "workspaces": {
+    ".": {
+      "ignoreDependencies": [
+        "@stylistic/eslint-plugin",
+        "@tsconfig/strictest",
+        "@zgeoff/oxlint-config"
+      ]
+    },
     "apps/web": {
-      "entry": ["src/routes/**/*.{ts,tsx}"]
+      "entry": ["src/routes/**/*.{ts,tsx}"],
+      "ignoreDependencies": ["@fontsource/*"]
+    },
+    "libs/design/styled-system": {
+      "ignoreDependencies": ["react"]
     },
     "libs/design/design-system": {
       "entry": ["src/**/*.stories.tsx"]

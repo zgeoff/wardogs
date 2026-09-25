@@ -1,0 +1,16 @@
+{
+  "name": "@wardogs-love/web-e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "e2e": "playwright test",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "catalog:",
+    "@types/bun": "catalog:",
+    "@zgeoff/tsconfig": "catalog:",
+    "typescript": "catalog:"
+  }
+}
