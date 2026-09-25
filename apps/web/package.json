@@ -1,0 +1,44 @@
+{
+  "name": "@wardogs-love/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite dev",
+    "start": "bun server.ts",
+    "test": "bun test",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typegen": "tsr generate"
+  },
+  "dependencies": {
+    "@fontsource/chakra-petch": "catalog:",
+    "@fontsource/ibm-plex-mono": "catalog:",
+    "@fontsource/ibm-plex-sans": "catalog:",
+    "@tanstack/react-router": "catalog:",
+    "@tanstack/react-start": "catalog:",
+    "@wardogs-love/design-system": "workspace:*",
+    "@wardogs-love/panda-preset": "workspace:*",
+    "@wardogs-love/styled-system": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "srvx": "catalog:"
+  },
+  "devDependencies": {
+    "@babel/core": "catalog:",
+    "@pandacss/dev": "catalog:",
+    "@rolldown/plugin-babel": "catalog:",
+    "@tanstack/router-cli": "catalog:",
+    "@types/babel__core": "catalog:",
+    "@types/bun": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "catalog:",
+    "@zgeoff/bun-test-extended": "catalog:",
+    "@zgeoff/tsconfig": "catalog:",
+    "babel-plugin-react-compiler": "catalog:",
+    "postcss": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  }
+}
