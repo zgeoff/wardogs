@@ -1,4 +1,5 @@
 import { css } from '@wardogs-love/styled-system/css';
+import { useRef } from 'react';
 import { ManifestPanel } from './panels/manifest-panel';
 import { Palette } from './panels/palette';
 import { SelectionPanel } from './panels/selection-panel';
@@ -8,6 +9,7 @@ import { TopBar } from './panels/top-bar';
 import { usePlanPersistence } from './persistence/use-plan-persistence';
 import { PlannerCanvas } from './scene/planner-canvas';
 import { useEditorHotkeys } from './use-editor-hotkeys';
+import { useLiftWheel } from './use-lift-wheel';
 
 const layout = css({
   display: 'grid',
@@ -33,8 +35,10 @@ const scene = css({ gridArea: 'scene', minHeight: '0', minWidth: '0', position: 
 
 export function FOBPlanner() {
   const status = usePlanPersistence();
+  const sceneRef = useRef<HTMLElement>(null);
 
   useEditorHotkeys();
+  useLiftWheel(sceneRef);
 
   return (
     <div className={layout}>
@@ -44,7 +48,7 @@ export function FOBPlanner() {
       <aside className={`${sidebar} ${palette}`}>
         <Palette />
       </aside>
-      <main className={scene}>
+      <main className={scene} ref={sceneRef}>
         {status !== 'loading' && <PlannerCanvas />}
         <StatusBar />
       </main>

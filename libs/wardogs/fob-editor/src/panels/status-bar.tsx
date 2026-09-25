@@ -56,7 +56,8 @@ export function StatusBar() {
             <Kbd>R</Kbd> rotate
           </span>
           <span className={hint}>
-            <Kbd>PgUp</Kbd>/<Kbd>PgDn</Kbd> lift {ghostLift > 0 ? `(+${ghostLift} m)` : ''}
+            <Kbd>PgUp</Kbd>/<Kbd>PgDn</Kbd>/<Kbd>Ctrl+wheel</Kbd> lift{' '}
+            {ghostLift > 0 ? `(+${ghostLift} m)` : ''}
           </span>
           <span className={hint}>
             <Kbd>right click</Kbd>/<Kbd>Esc</Kbd> stop placing

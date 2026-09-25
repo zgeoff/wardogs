@@ -47,6 +47,7 @@
               "KeyboardEvent",
               "PointerEvent",
               "MouseEvent",
+              "WheelEvent",
               "EventTarget",
               "Blob",
               "File",

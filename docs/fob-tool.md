@@ -50,8 +50,8 @@ The `/fob` route renders on the client only. The rest of the site renders on the
 
 ## Editing
 
-- Pick a piece from the palette, then click to place it. `R` turns it, and `PageUp`/`PageDown` raise
-  and lower it.
+- Pick a piece from the palette, then click to place it. `R` turns it, and `PageUp`/`PageDown` or
+  `Ctrl` with the wheel raise and lower it, or the selection, a half module at a time.
 - Drag to paint: a copy lands on each footprint-sized step the pointer passes through, and the drag
   places them all as one change. Hold `Shift` to keep the copies on a straight line along the longer
   axis. A copy rests on whatever is under it, and one that would intersect a piece is skipped. A

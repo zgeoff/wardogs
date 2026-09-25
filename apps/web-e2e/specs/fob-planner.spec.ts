@@ -144,3 +144,17 @@ test('it pastes a copied group wherever it is clicked', async ({ page }) => {
   await expect(page.getByRole('row', { name: /Door/u })).toContainText('×2');
   await expect(page.getByRole('row', { name: /Forward Operating Base/u })).toContainText('×2');
 });
+
+test('it lifts the piece being placed with Ctrl and the wheel', async ({ page }) => {
+  await page.goto('/fob');
+  await page.getByRole('button', { name: /Hesco Block \(Small\)/u }).click();
+
+  const box = await page.getByTestId('planner-canvas').boundingBox();
+
+  await page.mouse.move((box?.x ?? 0) + 200, (box?.y ?? 0) + 200);
+  await page.keyboard.down('Control');
+  await page.mouse.wheel(0, -200);
+  await page.keyboard.up('Control');
+
+  await expect(page.getByText('(+1.5 m)')).toBeVisible();
+});
