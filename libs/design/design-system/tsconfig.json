@@ -1,0 +1,8 @@
+{
+  "extends": "@zgeoff/tsconfig/react.json",
+  "compilerOptions": {
+    "types": ["bun", "vite/client", "@zgeoff/bun-test-extended", "@zgeoff/bun-test-react"]
+  },
+  "files": [],
+  "include": ["panda.config.ts", "vite.config.ts", ".ladle/**/*.tsx", "src/**/*.ts", "src/**/*.tsx"]
+}

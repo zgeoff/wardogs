@@ -17,7 +17,9 @@
     "**/dist/**",
     "**/*.json",
     "**/styled-system/**",
-    "**/routeTree.gen.ts"
+    "**/routeTree.gen.ts",
+    // Ladle parses these files for `export const`, which the house style bans elsewhere
+    "**/.ladle/**"
   ],
   "rules": {
     // React 19's automatic JSX runtime doesn't need React in scope

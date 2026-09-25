@@ -203,6 +203,10 @@ planner (`docs/fob-tool.md`).
 - Shared versions live in the root catalog; workspace packages reference them with `catalog:`.
 - `bunfig.toml` holds new versions back for 7 days. The `@zgeoff/*` packages from zgeoff/tools are
   listed in `minimumReleaseAgeExcludes` until their pinned version passes that age.
+- The root depends on `@tsconfig/strictest` directly. Panda's config loader resolves a tsconfig
+  `extends` from the symlinked path, not the real one, so it misses the copy inside
+  `@zgeoff/tsconfig`'s own dependencies.
+- Panda 2 drops the `paddingX`/`paddingY` family; write `paddingInline`/`paddingBlock`.
 
 ## Testing
 
