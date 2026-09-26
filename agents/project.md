@@ -13,6 +13,8 @@ planner (`docs/fob-tool.md`).
 - `libs/wardogs/fob`: the FOB plan model: grid, placement, intersection, stages, totals, and the
   plan document's schema and share encoding. Pure TypeScript, no React.
 - `libs/wardogs/fob-editor`: the planner UI: react-three-fiber scene, zustand store, panels.
+- `libs/wardogs/fob-share`: the short-link store: SQLite through Kysely, keyed by a cut of each
+  share code's hash. Server only.
 - `libs/core/storage`: the versioned document store (`{ id, tool, schemaVersion, data }`) and its
   IndexedDB implementation.
 - `libs/design/*`: `panda-preset` (tokens and theme), `styled-system` (Panda codegen, the only
@@ -38,6 +40,10 @@ planner (`docs/fob-tool.md`).
   `extends` from the symlinked path, not the real one, so it misses the copy inside
   `@zgeoff/tsconfig`'s own dependencies.
 - Panda 2 drops the `paddingX`/`paddingY` family; write `paddingInline`/`paddingBlock`.
+- Vite bundles the workspace libs into the server build but leaves their npm imports external, and
+  the Docker image installs only `apps/web`'s `dependencies`. So a server-side lib's npm packages
+  (`kysely`, `kysely-bun-worker`, `zod`) are `apps/web` dependencies too, and `knip.json` ignores
+  the ones `apps/web` never imports itself.
 
 ## Testing
 
@@ -67,6 +73,12 @@ packages add `@zgeoff/bun-test-react` (and its `zustand` preload) in their own `
 Production runs the Start server build under Bun, served through `srvx` (`apps/web/server.ts`). The
 repo pins Bun 1.4.2 (`.bun-version`): Bun 1.3.10 fails to load `react-dom/server` under
 `NODE_ENV=production`.
+
+- Short share links live in SQLite at `DATABASE_PATH`: `/data/wardogs.db` on the Fly volume
+  `wardogs_data`, `apps/web/.data/wardogs.db` in dev, and `:memory:` in e2e. The database migrates
+  itself on first use.
+- The volume pins the app to one machine and to the `rolling` deploy strategy.
+- `bun run dev` runs Vite under Bun (`bun --bun`), since the server code imports `bun:sqlite`.
 
 ## Function naming additions
 

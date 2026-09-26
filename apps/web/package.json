@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite dev",
+    "dev": "bun --bun vite dev",
     "start": "bun server.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "typegen": "tsr generate"
@@ -13,9 +13,12 @@
   "dependencies": {
     "@tanstack/react-router": "catalog:",
     "@tanstack/react-start": "catalog:",
+    "kysely": "catalog:",
+    "kysely-bun-worker": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "srvx": "catalog:"
+    "srvx": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@babel/core": "catalog:",
@@ -32,6 +35,7 @@
     "@vitejs/plugin-react": "catalog:",
     "@wardogs-love/design-system": "workspace:*",
     "@wardogs-love/fob-editor": "workspace:*",
+    "@wardogs-love/fob-share": "workspace:*",
     "@wardogs-love/panda-preset": "workspace:*",
     "@wardogs-love/styled-system": "workspace:*",
     "@zgeoff/tsconfig": "catalog:",

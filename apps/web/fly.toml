@@ -4,7 +4,16 @@ app = 'wardogs-love'
 primary_region = 'syd'
 
 [deploy]
-strategy = 'bluegreen'
+# bluegreen and canary cannot run with a volume attached
+strategy = 'rolling'
+
+# the share-link database lives on a volume, so the app runs as one machine
+[env]
+DATABASE_PATH = '/data/wardogs.db'
+
+[mounts]
+source = 'wardogs_data'
+destination = '/data'
 
 [http_service]
 internal_port = 3000

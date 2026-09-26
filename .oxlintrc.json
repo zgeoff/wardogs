@@ -66,6 +66,8 @@
           { "from": "package", "name": "RefObject", "package": "react" },
           // live IndexedDB handles: transactions and stores mutate them, no readonly form
           { "from": "package", "name": ["IDBPDatabase", "IDBPTransaction"], "package": "idb" },
+          // a live database handle: every query runs through it, no readonly form
+          { "from": "package", "name": "Kysely", "package": "kysely" },
           // three.js scene-graph handles and r3f events wrap live mutable objects
           {
             "from": "package",

@@ -31,7 +31,7 @@ test('it keeps the plan on the device across a reload', async ({ page }) => {
   await expect(page.getByRole('row', { name: /Gate/u })).toBeVisible();
 });
 
-test('it opens a copied share link as a copy of the plan', async ({ browser }) => {
+test('it opens a copied short share link as a copy of the plan', async ({ browser }) => {
   const context = await browser.newContext({ permissions: ['clipboard-read', 'clipboard-write'] });
   const page = await context.newPage();
 
@@ -45,6 +45,9 @@ test('it opens a copied share link as a copy of the plan', async ({ browser }) =
   await expect(page.getByText('Share link copied')).toBeVisible();
 
   const link = await page.evaluate(() => navigator.clipboard.readText());
+
+  expect(link).toMatch(/\/p\/[\w-]{8}$/u);
+
   const fresh = await browser.newPage();
 
   await fresh.goto(link);
@@ -54,6 +57,12 @@ test('it opens a copied share link as a copy of the plan', async ({ browser }) =
   await expect(fresh).toHaveURL(/\/fob$/u);
 
   await context.close();
+});
+
+test('it answers an unknown short share link with a 404', async ({ request }) => {
+  const response = await request.get('/p/AbCd1234', { maxRedirects: 0 });
+
+  expect(response.status()).toBe(404);
 });
 
 test('it undoes a placement', async ({ page }) => {

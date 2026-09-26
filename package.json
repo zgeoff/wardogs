@@ -51,6 +51,8 @@
       "fake-indexeddb": "6.2.5",
       "idb": "8.0.3",
       "knip": "6.37.0",
+      "kysely": "0.29.6",
+      "kysely-bun-worker": "2.0.1",
       "lefthook": "2.1.14",
       "oxfmt": "0.56.0",
       "oxlint": "1.71.0",

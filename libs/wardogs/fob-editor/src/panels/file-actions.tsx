@@ -1,11 +1,13 @@
 import { Button } from '@wardogs-love/design-system';
 import { encodePlan } from '@wardogs-love/fob';
 import { css } from '@wardogs-love/styled-system/css';
-import { useRef, useState } from 'react';
+import { use, useRef, useState } from 'react';
 import { buildNewPlan } from '../persistence/build-new-plan';
 import { buildPlanDocument } from '../persistence/build-plan-document';
 import { readPlanFile } from '../persistence/read-plan-file';
 import { writePlanFile } from '../persistence/write-plan-file';
+import { ShareLinkContext } from '../share-link-context';
+import type { CreateShareLink } from '../share-link-context';
 import { useEditorStore } from '../state/editor-store';
 import { OpenPlanDialog } from './open-plan-dialog';
 
@@ -17,12 +19,17 @@ export function FileActions() {
   const [isOpenDialogShown, setIsOpenDialogShown] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  const createShareLink = use(ShareLinkContext);
 
   const handleShare = async () => {
     const code = await encodePlan(useEditorStore.getState().plan);
 
     const location = globalThis.location;
-    const url = `${location.origin}${location.pathname}#plan=${code}`;
+    const longURL = `${location.origin}${location.pathname}#plan=${code}`;
+
+    const shortURL = await tryCreateShareLink(createShareLink, code);
+
+    const url = shortURL ?? longURL;
 
     try {
       await navigator.clipboard.writeText(url);
@@ -112,6 +119,18 @@ export function FileActions() {
       <OpenPlanDialog onOpenChange={setIsOpenDialogShown} open={isOpenDialogShown} />
     </div>
   );
+}
+
+// a failed short link falls back to the long one, which needs no server
+async function tryCreateShareLink(
+  createShareLink: CreateShareLink | undefined,
+  code: string,
+): Promise<string | undefined> {
+  try {
+    return await createShareLink?.(code);
+  } catch {
+    return undefined;
+  }
 }
 
 function writeCurrentPlanFile() {

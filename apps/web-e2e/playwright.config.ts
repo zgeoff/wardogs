@@ -31,7 +31,7 @@ export default defineConfig({
   webServer: {
     command: 'bun server.ts',
     cwd: '../web',
-    env: { PORT: String(PORT) },
+    env: { DATABASE_PATH: ':memory:', PORT: String(PORT) },
     reuseExistingServer: false,
     url: `http://localhost:${PORT}/health`,
   },

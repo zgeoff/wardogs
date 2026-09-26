@@ -10,7 +10,7 @@
     },
     "apps/web": {
       "entry": ["src/routes/**/*.{ts,tsx}"],
-      "ignoreDependencies": ["@fontsource/*"]
+      "ignoreDependencies": ["@fontsource/*", "kysely", "kysely-bun-worker"]
     },
     "infra": {
       "ignoreBinaries": ["op"]
