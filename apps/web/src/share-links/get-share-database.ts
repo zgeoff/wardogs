@@ -11,13 +11,21 @@ let opening: Promise<Kysely<ShareSchema>> | null = null;
 
 // the server's one share database, opened and migrated on first use
 export function getShareDatabase(): Promise<Kysely<ShareSchema>> {
-  if (opening === null) {
-    if (databasePath !== ':memory:') {
-      mkdirSync(dirname(databasePath), { recursive: true });
-    }
-
-    opening = createShareDatabase(databasePath);
-  }
+  opening ??= createShareDatabaseFromEnv();
 
   return opening;
+}
+
+// a failed open clears itself, so the next request tries again instead of failing for good
+async function createShareDatabaseFromEnv(): Promise<Kysely<ShareSchema>> {
+  if (databasePath !== ':memory:') {
+    mkdirSync(dirname(databasePath), { recursive: true });
+  }
+
+  try {
+    return await createShareDatabase(databasePath);
+  } catch (error) {
+    opening = null;
+    throw error;
+  }
 }
