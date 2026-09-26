@@ -1,67 +1,59 @@
 # wardogs ❤️
 
-Tools for the game [Wardogs](https://www.wardogs.com), at [wardogs.love](https://wardogs.love). The
-"love" in the domain is silent.
+Tools for [Wardogs](https://www.wardogs.com). The first one is a **FOB planner**: lay out your base
+in 3D before you spend a single supply on it.
 
-The first tool is the **FOB planner** (`/fob`). It lays out a forward operating base on a 0.75 m
-grid in 3D, splits the build into stages, and shows the supply cost of each stage.
-[`docs/fob-tool.md`](docs/fob-tool.md) describes what it models and what it leaves out.
+**[Open the planner → wardogs.love/fob](https://wardogs.love/fob)**
 
-The planner draws each piece as a simple model of our own, sized to its collision box. The game's
-models are not licensed for reuse.
+![A walled FOB in the planner's 3D view, with the piece palette on the left and the supply cost of each stage on the right](docs/images/fob-planner.png)
 
-## Run it
+## What it does
 
-Install [Bun](https://bun.sh) at the version in `.bun-version` (`bun upgrade` gets the latest
-release), then:
+- Place every buildable piece on the game's grid, half-module offsets included.
+- Stack pieces, turn them, and check that nothing overlaps.
+- Split the build into stages and see what each one costs in supplies.
+- See when a piece falls outside the FOB's build area.
+- Keep as many plans as you like in your browser, with no account. Export a plan to a file, import
+  one, or copy a share link for your squad.
+
+## Controls
+
+| To                     | Do                                                                  |
+| ---------------------- | ------------------------------------------------------------------- |
+| Place a piece          | Pick it in the palette, then click                                  |
+| Place a row of copies  | Drag; hold `Shift` to keep the row straight                         |
+| Turn it                | `R`                                                                 |
+| Raise or lower it      | `PageUp` / `PageDown`, or `Ctrl` + wheel                            |
+| Stop placing           | Right click or `Esc`                                                |
+| Select                 | Click a piece, or drag a box; `Shift` toggles pieces in or out      |
+| Move the selection     | Drag it, or nudge it with the arrow keys                            |
+| Duplicate              | `D` puts the selection on your cursor                               |
+| Copy and paste a group | `Ctrl+C`, then `Ctrl+V` and click to land each copy                 |
+| Delete                 | `Delete` or `Backspace`                                             |
+| Undo and redo          | `Ctrl+Z` and `Ctrl+Shift+Z` (or `Ctrl+Y`)                           |
+| Switch views           | **Top** or **3D** in the top bar                                    |
+| Move the camera        | Wheel zooms; right drag pans (Top) or orbits (3D); middle drag pans |
+| Frame the base         | `F`                                                                 |
+
+[`docs/fob-tool.md`](docs/fob-tool.md) has the details, including what the planner models on purpose
+and what it leaves to you.
+
+## The numbers
+
+Piece sizes and costs come from community data and live in
+[`libs/wardogs/game-data`](libs/wardogs/game-data/src/piece-catalog.ts). Each entry says whether it
+has been checked in the game. Spot a wrong number? A pull request that fixes the catalog is very
+welcome.
+
+## Hacking on it
+
+You need [Bun](https://bun.sh) at the version in `.bun-version`.
 
 ```sh
 bun install
-bun run dev    # the app on http://localhost:3000
-bun run ladle  # the component stories
-bun run e2e    # build the app and run the Playwright specs
+bun run dev   # http://localhost:3000
+bun run e2e   # build the app and run the Playwright specs
 ```
 
-Plans save in the browser's IndexedDB. No account and no backend exist.
-
-## Layout
-
-| Path                      | Holds                                                          |
-| ------------------------- | -------------------------------------------------------------- |
-| `apps/web`                | the TanStack Start app, served by Bun through `srvx`           |
-| `apps/web-e2e`            | Playwright specs against the production build                  |
-| `libs/wardogs/game-data`  | the piece catalog: sizes, costs, and hit points as data        |
-| `libs/wardogs/fob`        | the plan model: grid, intersection, stages, totals, share code |
-| `libs/wardogs/fob-editor` | the planner UI: react-three-fiber scene, zustand store, panels |
-| `libs/core/storage`       | the versioned document store and its IndexedDB implementation  |
-| `libs/design/*`           | the Panda preset, the generated styled system, the components  |
-| `infra`                   | the Pulumi program for Cloudflare DNS, TLS, and caching        |
-| `docs`                    | the tool specs                                                 |
-
-## The piece catalog
-
-`libs/wardogs/game-data` holds every buildable piece. Each entry records its source and whether it
-has been checked in the game. The first numbers come from community research, and each entry keeps
-`verifiedInGame: false` until someone checks it in the game. A correction changes the catalog only.
-
-## Deploy
-
-A push to `main` runs the checks and the e2e specs, then deploys to Fly
-(`.github/workflows/main.yml`). `infra/README.md` sets up the Cloudflare side.
-
-## Later
-
-The site starts with no backend. When a tool needs one, the plan is:
-
-- oRPC contracts in `contracts/*`, served from a Start server route and called in-process on the
-  server
-- Google sign-in with a sealed session cookie
-- Kysely on Postgres
-
-Saved work is already a versioned document (`{ id, tool, schemaVersion, data }`) behind a storage
-interface, so a server store can replace IndexedDB without a change to the tools.
-
-## Contributing
-
-`AGENTS.md` holds the repo rules for people and agents. Commits follow Conventional Commits, and
-lefthook runs the formatter, the linter, and commitlint on each commit.
+[`AGENTS.md`](AGENTS.md) covers the repo layout, the checks CI runs, and the house rules for people
+and agents alike. [`infra/README.md`](infra/README.md) covers the deploy.

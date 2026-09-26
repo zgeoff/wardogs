@@ -40,11 +40,11 @@ totals follow the current catalog.
 ## Rendering
 
 The planner renders with react-three-fiber. The default camera looks straight down with an
-orthographic projection; an orbit camera shows the base in 3D. Each piece renders as a simple model
-of our own, built from boxes and other primitives to fill its collision box. The models live in
-`libs/wardogs/fob-editor/src/scene/models`, and a piece without one renders as a box of its size,
-coloured by category. A click anywhere in a piece's collision box selects it, including a gap in a
-model such as barbed wire.
+orthographic projection; the 3D view orbits the base. Each piece renders as a simple model of our
+own, built from boxes and other primitives to fill its collision box, since the game's models are
+not licensed for reuse. The models live in `libs/wardogs/fob-editor/src/scene/models`, and a piece
+without one renders as a box of its size, coloured by category. A click anywhere in a piece's
+collision box selects it, including a gap in a model such as barbed wire.
 
 The `/fob` route renders on the client only. The rest of the site renders on the server.
 
@@ -57,15 +57,18 @@ The `/fob` route renders on the client only. The rest of the site renders on the
   axis. A copy rests on whatever is under it, and one that would intersect a piece is skipped. A
   right click or `Esc` during a drag drops it.
 - A right click, or `Esc`, stops placing; with nothing to place, it clears the selection. A right
-  drag still pans the camera.
+  drag still moves the camera.
 - `Ctrl+C` copies the selection, and `Ctrl+V` puts the copy on the cursor as one group: each click
   lands a copy of the whole group, settled as a unit on whatever is under it, and `R` turns it. The
   copy stays until the next `Ctrl+C`, so it pastes into another stage too.
 - `D` duplicates: one selected piece goes on the cursor, turned the same way, to place or paint more
   of it; with several selected, `D` copies and pastes them as a group.
-- Select a piece to move, turn, restage, or delete it. Drag a box to select many.
+- Select a piece to move, turn, restage, or delete it. Drag a box to select many. `Shift` with a
+  click or a box toggles those pieces in or out of the selection. Press `Ctrl+A` to select every
+  piece the current stage shows. Drag the selection or nudge it with the arrow keys to move it.
 - Undo and redo cover every change.
-- Pan and zoom in both cameras.
+- The wheel zooms both cameras. A right drag pans the top view and orbits the 3D view; a middle drag
+  pans both. `F` frames the base.
 
 ## Saving and sharing
 
