@@ -30,9 +30,12 @@
       "dependencies": {
         "@tanstack/react-router": "catalog:",
         "@tanstack/react-start": "catalog:",
+        "kysely": "catalog:",
+        "kysely-bun-worker": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",
         "srvx": "catalog:",
+        "zod": "catalog:",
       },
       "devDependencies": {
         "@babel/core": "catalog:",
@@ -49,6 +52,7 @@
         "@vitejs/plugin-react": "catalog:",
         "@wardogs-love/design-system": "workspace:*",
         "@wardogs-love/fob-editor": "workspace:*",
+        "@wardogs-love/fob-share": "workspace:*",
         "@wardogs-love/panda-preset": "workspace:*",
         "@wardogs-love/styled-system": "workspace:*",
         "@zgeoff/tsconfig": "catalog:",
@@ -198,6 +202,21 @@
         "typescript": "catalog:",
       },
     },
+    "libs/wardogs/fob-share": {
+      "name": "@wardogs-love/fob-share",
+      "version": "0.0.0",
+      "dependencies": {
+        "@wardogs-love/fob": "workspace:*",
+        "kysely": "catalog:",
+        "kysely-bun-worker": "catalog:",
+      },
+      "devDependencies": {
+        "@types/bun": "catalog:",
+        "@zgeoff/bun-test-extended": "catalog:",
+        "@zgeoff/tsconfig": "catalog:",
+        "typescript": "catalog:",
+      },
+    },
     "libs/wardogs/game-data": {
       "name": "@wardogs-love/game-data",
       "version": "0.0.0",
@@ -256,6 +275,8 @@
     "fake-indexeddb": "6.2.5",
     "idb": "8.0.3",
     "knip": "6.37.0",
+    "kysely": "0.29.6",
+    "kysely-bun-worker": "2.0.1",
     "lefthook": "2.1.14",
     "oxfmt": "0.56.0",
     "oxlint": "1.71.0",
@@ -1206,6 +1227,8 @@
 
     "@wardogs-love/fob-editor": ["@wardogs-love/fob-editor@workspace:libs/wardogs/fob-editor"],
 
+    "@wardogs-love/fob-share": ["@wardogs-love/fob-share@workspace:libs/wardogs/fob-share"],
+
     "@wardogs-love/game-data": ["@wardogs-love/game-data@workspace:libs/wardogs/game-data"],
 
     "@wardogs-love/infra": ["@wardogs-love/infra@workspace:infra"],
@@ -1941,6 +1964,12 @@
     "koa-compose": ["koa-compose@4.1.0", "", {}, "sha512-8ODW8TrDuMYvXRwra/Kh7/rJo9BtOfPc6qO8eAfC80CnCvSjSl0bkRM24X6/XBBEyj0v1nRUQ1LyOy3dbqOWXw=="],
 
     "koa-convert": ["koa-convert@2.0.0", "", { "dependencies": { "co": "^4.6.0", "koa-compose": "^4.1.0" } }, "sha512-asOvN6bFlSnxewce2e/DK3p4tltyfC4VM7ZwuTuepI7dEQVcvpyFuBcEARu1+Hxg8DIwytce2n7jrZtRlPrARA=="],
+
+    "kysely": ["kysely@0.29.6", "", {}, "sha512-hHaB8C/rfzDDtr/t8YZwxAuPJTT0zHyaPoVzcXwDYhYNAgH/4sIfVhi/XLLIY+bL/FqaIJnjATDbi8ObSELmxg=="],
+
+    "kysely-bun-worker": ["kysely-bun-worker@2.0.1", "", { "dependencies": { "kysely-generic-sqlite": "2.0.1" }, "peerDependencies": { "bun-types": ">=1.1.14", "kysely": ">=0.29" } }, "sha512-OI+1h7KqcrCgo805N2LiMgm+974BlUxscUUVjkqL0gLEMAIwqlb0hMw76v4rHdBAllRsHzFNtN/hoVBuIJTTQQ=="],
+
+    "kysely-generic-sqlite": ["kysely-generic-sqlite@2.0.1", "", { "peerDependencies": { "kysely": ">=0.29" } }, "sha512-Hu1G1pgFD7yUWHb1PyySeC+rP7lB0AasWniZ5qM5oGHRvs7AVc7w6B9k5FbLFmzBgp305wO55cEsqHmGm95gCg=="],
 
     "lefthook": ["lefthook@2.1.14", "", { "optionalDependencies": { "lefthook-darwin-arm64": "2.1.14", "lefthook-darwin-x64": "2.1.14", "lefthook-freebsd-arm64": "2.1.14", "lefthook-freebsd-x64": "2.1.14", "lefthook-linux-arm64": "2.1.14", "lefthook-linux-x64": "2.1.14", "lefthook-openbsd-arm64": "2.1.14", "lefthook-openbsd-x64": "2.1.14", "lefthook-windows-arm64": "2.1.14", "lefthook-windows-x64": "2.1.14" }, "bin": { "lefthook": "bin/index.js" } }, "sha512-Y9TL1dmpRlIdSp73SJ6bb+xAZ4s2SinGTK3pgC9PRWMSjMr2iOfowPGnlSOfAo5fu6S5rdiItsQDxeLEWCGk4g=="],
 

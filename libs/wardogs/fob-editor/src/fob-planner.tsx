@@ -8,6 +8,8 @@ import { StatusBar } from './panels/status-bar';
 import { TopBar } from './panels/top-bar';
 import { usePlanPersistence } from './persistence/use-plan-persistence';
 import { PlannerCanvas } from './scene/planner-canvas';
+import { ShareLinkContext } from './share-link-context';
+import type { CreateShareLink } from './share-link-context';
 import { useEditorHotkeys } from './use-editor-hotkeys';
 import { useLiftWheel } from './use-lift-wheel';
 
@@ -33,7 +35,11 @@ const palette = css({ gridArea: 'palette', borderRightWidth: '[1px]' });
 const side = css({ gridArea: 'side', borderLeftWidth: '[1px]' });
 const scene = css({ gridArea: 'scene', minHeight: '0', minWidth: '0', position: 'relative' });
 
-export function FOBPlanner() {
+interface FOBPlannerProps {
+  readonly createShareLink?: CreateShareLink;
+}
+
+export function FOBPlanner(props: FOBPlannerProps) {
   const status = usePlanPersistence();
   const sceneRef = useRef<HTMLElement>(null);
 
@@ -41,22 +47,24 @@ export function FOBPlanner() {
   useLiftWheel(sceneRef);
 
   return (
-    <div className={layout}>
-      <div className={top}>
-        <TopBar status={status} />
+    <ShareLinkContext value={props.createShareLink}>
+      <div className={layout}>
+        <div className={top}>
+          <TopBar status={status} />
+        </div>
+        <aside className={`${sidebar} ${palette}`}>
+          <Palette />
+        </aside>
+        <main className={scene} ref={sceneRef}>
+          {status !== 'loading' && <PlannerCanvas />}
+          <StatusBar />
+        </main>
+        <aside className={`${sidebar} ${side}`}>
+          <StagesPanel />
+          <SelectionPanel />
+          <ManifestPanel />
+        </aside>
       </div>
-      <aside className={`${sidebar} ${palette}`}>
-        <Palette />
-      </aside>
-      <main className={scene} ref={sceneRef}>
-        {status !== 'loading' && <PlannerCanvas />}
-        <StatusBar />
-      </main>
-      <aside className={`${sidebar} ${side}`}>
-        <StagesPanel />
-        <SelectionPanel />
-        <ManifestPanel />
-      </aside>
-    </div>
+    </ShareLinkContext>
   );
 }

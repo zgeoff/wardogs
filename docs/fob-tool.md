@@ -74,7 +74,11 @@ The `/fob` route renders on the client only. The rest of the site renders on the
 
 - Plans save to IndexedDB in the browser, with no account. A player keeps many named plans.
 - A plan exports to a JSON file and imports from one.
-- A share link carries the whole plan in the URL fragment, so sharing needs no server.
+- Share link copies a short link, `wardogs.love/p/<id>`. The server stores the plan's share code
+  under an id cut from the code's hash, so the same plan always gets the same link, and the link
+  redirects to the planner with the code in the URL fragment.
+- A plan's share code in the fragment, `/fob#plan=<code>`, still opens with no server. The planner
+  copies that long link when the server cannot store the plan.
 - Every saved plan is a versioned document, `{ id, tool, schemaVersion, data }`, so a later schema
   migrates old plans.
 

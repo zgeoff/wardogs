@@ -48,10 +48,10 @@ COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=builder /app/apps/web/dist ./apps/web/dist
 COPY --from=builder /app/apps/web/server.ts ./apps/web/server.ts
 
-USER bun
-
 EXPOSE 3000
 
 WORKDIR /app/apps/web
 
-CMD ["bun", "server.ts"]
+# Fly mounts the volume at /data owned by root: hand it to the bun user, then drop to that user to
+# serve
+CMD ["sh", "-c", "if [ -d /data ]; then chown bun:bun /data; fi && exec setpriv --reuid=bun --regid=bun --init-groups bun server.ts"]
