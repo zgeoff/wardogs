@@ -1,0 +1,6 @@
+encryptionsalt: v1:FHIyPs2Fr4c=:v1:HyjyLXJqXldEJKEN:AUNE7rOz0Z9zN8tscxRdy4huw3L44g==
+config:
+  wardogs-infra:zoneId: fc78f4d2735be9209c8f4cdf8d15a05f
+  wardogs-infra:acmeChallengeTargets:
+    wardogs.love: wardogs.love.jpddnlg.flydns.net
+    www.wardogs.love: www.wardogs.love.jpddnlg.flydns.net
