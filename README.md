@@ -25,7 +25,7 @@ in 3D before you spend a single supply on it.
 | Turn it                | `R`                                                                 |
 | Raise or lower it      | `PageUp` / `PageDown`, or `Ctrl` + wheel                            |
 | Stop placing           | Right click or `Esc`                                                |
-| Select                 | Click a piece, or drag a box; `Shift` adds to the selection         |
+| Select                 | Click a piece, or drag a box; `Shift` toggles pieces in or out      |
 | Move the selection     | Drag it, or nudge it with the arrow keys                            |
 | Duplicate              | `D` puts the selection on your cursor                               |
 | Copy and paste a group | `Ctrl+C`, then `Ctrl+V` and click to land each copy                 |

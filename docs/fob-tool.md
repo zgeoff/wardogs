@@ -63,9 +63,9 @@ The `/fob` route renders on the client only. The rest of the site renders on the
   copy stays until the next `Ctrl+C`, so it pastes into another stage too.
 - `D` duplicates: one selected piece goes on the cursor, turned the same way, to place or paint more
   of it; with several selected, `D` copies and pastes them as a group.
-- Select a piece to move, turn, restage, or delete it. Drag a box to select many, with `Shift` to
-  add to the selection, or press `Ctrl+A` to select every piece the current stage shows. Drag the
-  selection or nudge it with the arrow keys to move it.
+- Select a piece to move, turn, restage, or delete it. Drag a box to select many. `Shift` with a
+  click or a box toggles those pieces in or out of the selection. Press `Ctrl+A` to select every
+  piece the current stage shows. Drag the selection or nudge it with the arrow keys to move it.
 - Undo and redo cover every change.
 - The wheel zooms both cameras. A right drag pans the top view and orbits the 3D view; a middle drag
   pans both. `F` frames the base.
