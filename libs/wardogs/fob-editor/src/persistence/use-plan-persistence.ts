@@ -12,18 +12,18 @@ export function usePlanPersistence(): PersistenceStatus {
   const [status, setStatus] = useState<PersistenceStatus>('loading');
 
   useEffect(() => {
-    let isCancelled = false;
+    const controller = new AbortController();
 
     void (async () => {
-      await loadStartingPlan(store);
+      await loadStartingPlan(store, controller.signal);
 
-      if (!isCancelled) {
+      if (!controller.signal.aborted) {
         setStatus('saved');
       }
     })();
 
     return () => {
-      isCancelled = true;
+      controller.abort();
     };
   }, [store]);
 

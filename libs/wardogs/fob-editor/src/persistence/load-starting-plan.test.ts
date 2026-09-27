@@ -40,7 +40,7 @@ test('it opens the plan edited last', async () => {
     data: { stageCount: 2, pieces: [] },
   });
 
-  await loadStartingPlan(context.store);
+  await loadStartingPlan(context.store, new AbortController().signal);
 
   expect(useEditorStore.getState()).toMatchObject({
     documentID: 'new',
@@ -52,7 +52,7 @@ test('it opens the plan edited last', async () => {
 test('it starts a new plan with a FOB when nothing is saved', async () => {
   await using context = setupTest();
 
-  await loadStartingPlan(context.store);
+  await loadStartingPlan(context.store, new AbortController().signal);
 
   expect(useEditorStore.getState()).toMatchObject({
     name: 'Untitled FOB',
@@ -75,10 +75,72 @@ test('it opens the plan a share link carries', async () => {
     globalThis.location.hash = '';
   });
 
-  await loadStartingPlan(context.store);
+  await loadStartingPlan(context.store, new AbortController().signal);
 
   expect(useEditorStore.getState()).toMatchObject({
     name: 'Shared plan',
     plan: { stageCount: 3, pieces: [{ pieceID: 'gate', x: 4, z: 4, rotation: 1, stage: 3 }] },
   });
+});
+
+test('it leaves a share link in place for the next load when an aborted load reads it', async () => {
+  await using context = setupTest();
+
+  const code = await encodePlan({
+    stageCount: 2,
+    pieces: [{ id: 'a', pieceID: 'gate', x: 2, z: 6, elevation: 0, rotation: 0, stage: 2 }],
+  });
+
+  globalThis.location.hash = `#plan=${code}`;
+
+  onTestFinished(() => {
+    globalThis.location.hash = '';
+  });
+
+  const aborted = new AbortController();
+
+  aborted.abort();
+
+  await loadStartingPlan(context.store, aborted.signal);
+  await loadStartingPlan(context.store, new AbortController().signal);
+
+  expect(useEditorStore.getState()).toMatchObject({
+    name: 'Shared plan',
+    plan: { stageCount: 2, pieces: [{ pieceID: 'gate', x: 2, z: 6, stage: 2 }] },
+  });
+
+  expect(globalThis.location.hash).toBe('');
+});
+
+test('it changes neither the open plan nor the URL when the load is aborted', async () => {
+  await using context = setupTest();
+
+  const code = await encodePlan({
+    stageCount: 1,
+    pieces: [{ id: 'a', pieceID: 'gate', x: 0, z: 0, elevation: 0, rotation: 0, stage: 1 }],
+  });
+
+  useEditorStore
+    .getState()
+    .loadPlan({ id: 'open', name: 'Open plan', plan: { stageCount: 1, pieces: [] } });
+
+  globalThis.location.hash = `#plan=${code}`;
+
+  onTestFinished(() => {
+    globalThis.location.hash = '';
+  });
+
+  const aborted = new AbortController();
+
+  aborted.abort();
+
+  await loadStartingPlan(context.store, aborted.signal);
+
+  expect(useEditorStore.getState()).toMatchObject({
+    documentID: 'open',
+    name: 'Open plan',
+    plan: { stageCount: 1, pieces: [] },
+  });
+
+  expect(globalThis.location.hash).toBe(`#plan=${code}`);
 });

@@ -54,6 +54,7 @@
               "Date",
               "URL",
               "Uint8Array",
+              "AbortSignal",
               "Error",
               // genuinely immutable, but their members are method signatures, which the rule
               // treats as mutable (typescript-eslint#8013)

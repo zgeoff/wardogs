@@ -6,26 +6,63 @@ import type { LoadedPlan } from '../state/types';
 import { buildNewPlan } from './build-new-plan';
 import { FOB_TOOL, parsePlanDocument } from './parse-plan-document';
 
-// opens a share link's plan if the URL carries one, else the plan edited last, else a new plan
-export async function loadStartingPlan(store: DocumentStore): Promise<void> {
+// opens a share link's plan if the URL carries one, else the plan edited last, else a new plan; an
+// aborted load changes nothing, not even the URL, so React's second dev-mode run still finds the link
+export async function loadStartingPlan(store: DocumentStore, signal: AbortSignal): Promise<void> {
   const shared = await tryDecodeSharedPlan();
 
-  if (shared !== null) {
-    useEditorStore
-      .getState()
-      .loadPlan({ id: crypto.randomUUID(), name: 'Shared plan', plan: shared });
+  if (signal.aborted) {
+    return;
+  }
 
-    // a shared plan counts as an edit, so it saves as a copy of its own
-    useEditorStore.getState().renamePlan('Shared plan');
+  removeShareCode();
+
+  if (shared !== null) {
+    setSharedPlan(shared);
 
     return;
   }
 
   const latest = await readLatestPlan(store);
 
-  useEditorStore
-    .getState()
-    .loadPlan(latest ?? { id: crypto.randomUUID(), name: 'Untitled FOB', plan: buildNewPlan() });
+  if (!signal.aborted) {
+    useEditorStore
+      .getState()
+      .loadPlan(latest ?? { id: crypto.randomUUID(), name: 'Untitled FOB', plan: buildNewPlan() });
+  }
+}
+
+// a share link carries the plan after `#plan=`
+const SHARE_CODE_PATTERN = /^#plan=(?<code>.+)$/u;
+
+async function tryDecodeSharedPlan(): Promise<Plan | null> {
+  const code = SHARE_CODE_PATTERN.exec(globalThis.location.hash)?.groups?.['code'];
+
+  if (code === undefined) {
+    return null;
+  }
+
+  try {
+    return await decodePlan(code);
+  } catch {
+    return null;
+  }
+}
+
+// the fragment clears once read, so a reload opens the saved copy instead of importing the link
+// again
+function removeShareCode(): void {
+  const location = globalThis.location;
+
+  if (SHARE_CODE_PATTERN.test(location.hash)) {
+    globalThis.history.replaceState(null, '', location.pathname + location.search);
+  }
+}
+
+// a shared plan counts as an edit, so it saves as a copy of its own
+function setSharedPlan(plan: Plan): void {
+  useEditorStore.getState().loadPlan({ id: crypto.randomUUID(), name: 'Shared plan', plan });
+  useEditorStore.getState().renamePlan('Shared plan');
 }
 
 async function readLatestPlan(store: DocumentStore): Promise<LoadedPlan | null> {
@@ -44,23 +81,4 @@ async function readLatestPlan(store: DocumentStore): Promise<LoadedPlan | null> 
   const parsed = parsePlanDocument(document);
 
   return parsed.ok ? { id: document.id, name: document.name, plan: parsed.plan } : null;
-}
-
-// a share link carries the plan after `#plan=`; the fragment clears once read, so a reload opens
-// the saved copy instead of importing the link again
-async function tryDecodeSharedPlan(): Promise<Plan | null> {
-  const location = globalThis.location;
-  const code = /^#plan=(?<code>.+)$/u.exec(location.hash)?.groups?.['code'];
-
-  if (code === undefined) {
-    return null;
-  }
-
-  globalThis.history.replaceState(null, '', location.pathname + location.search);
-
-  try {
-    return await decodePlan(code);
-  } catch {
-    return null;
-  }
 }
