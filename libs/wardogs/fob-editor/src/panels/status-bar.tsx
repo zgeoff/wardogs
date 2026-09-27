@@ -30,6 +30,7 @@ export function StatusBar() {
   const tool = useEditorStore((state) => state.tool);
   const ghostLift = useEditorStore((state) => state.ghostLift);
   const isPasting = useEditorStore((state) => state.stamp !== null);
+  const isOrbit = useEditorStore((state) => state.cameraMode === 'orbit');
 
   return (
     <div className={bar}>
@@ -85,9 +86,20 @@ export function StatusBar() {
           </span>
         </>
       )}
-      <span className={hint}>
-        <Kbd>right drag</Kbd> pan
-      </span>
+      {isOrbit ? (
+        <>
+          <span className={hint}>
+            <Kbd>right drag</Kbd> orbit
+          </span>
+          <span className={hint}>
+            <Kbd>middle drag</Kbd> pan
+          </span>
+        </>
+      ) : (
+        <span className={hint}>
+          <Kbd>right drag</Kbd> pan
+        </span>
+      )}
       <span className={hint}>
         <Kbd>wheel</Kbd> zoom
       </span>
