@@ -7,6 +7,7 @@ import { buildDragOffset } from '../state/build-drag-offset';
 import { useEditorStore } from '../state/editor-store';
 import type { EditorState } from '../state/types';
 import { categoryColors, sceneColors } from './category-colors';
+import { findGroundPoint } from './find-ground-point';
 import { getPieceTransform } from './get-piece-transform';
 import { pieceModels } from './models/piece-models';
 
@@ -90,11 +91,12 @@ function PieceMesh(props: PieceMeshProps) {
       state.selectPieces([props.piece.id], 'replace');
     }
 
-    state.startGesture({
-      kind: 'drag',
-      start: { x: event.point.x, z: event.point.z },
-      additive: false,
-    });
+    // the drop point comes from the ground under the cursor, so the drag starts there too, not on
+    // the piece's top: in the 3D view the two differ, and a plain click would move the piece
+    const start = findGroundPoint(event.ray) ?? { x: event.point.x, z: event.point.z };
+
+    state.setPointer(start);
+    state.startGesture({ kind: 'drag', start, additive: false });
   };
 
   const piece = getPiece(props.piece.pieceID);
