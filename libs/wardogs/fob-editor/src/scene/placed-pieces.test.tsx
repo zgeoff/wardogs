@@ -68,12 +68,45 @@ test('it selects a piece pressed with the select tool', async () => {
     {
       button: 0,
       point: { x: 0.5, y: 1, z: 0.5 },
+      ray: { origin: { x: 0.5, y: 10, z: 0.5 }, direction: { x: 0, y: -1, z: 0 } },
       shiftKey: false,
       stopPropagation: () => {},
     },
   );
 
   expect([...useEditorStore.getState().selection]).toStrictEqual(['a']);
+});
+
+test('it leaves a piece in place when a slanted 3D press on its top ends without a drag', async () => {
+  useEditorStore.getState().loadPlan({
+    id: 'd',
+    name: 'Plan',
+    plan: {
+      stageCount: 1,
+      pieces: [{ id: 'a', pieceID: 'bunker', x: 0, z: 0, elevation: 0, rotation: 0, stage: 1 }],
+    },
+  });
+
+  const renderer = await setupTest();
+
+  await renderer.fireEvent(
+    renderer.scene.find((node) => node.instance.name === 'piece-a'),
+    'pointerDown',
+    {
+      button: 0,
+      point: { x: 1, y: 4, z: 1 },
+      ray: { origin: { x: 1, y: 24, z: 16 }, direction: { x: 0, y: -0.8, z: -0.6 } },
+      shiftKey: false,
+      stopPropagation: () => {},
+    },
+  );
+
+  useEditorStore.getState().setPointer({ x: 1, z: -2 });
+  useEditorStore.getState().endGesture();
+
+  expect(useEditorStore.getState().plan.pieces).toStrictEqual([
+    { id: 'a', pieceID: 'bunker', x: 0, z: 0, elevation: 0, rotation: 0, stage: 1 },
+  ]);
 });
 
 test('it draws a piece’s hand-built model beside its hit box', async () => {
