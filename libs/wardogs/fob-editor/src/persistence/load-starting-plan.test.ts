@@ -111,3 +111,36 @@ test('it leaves a share link in place for the next load when an aborted load rea
 
   expect(globalThis.location.hash).toBe('');
 });
+
+test('it changes neither the open plan nor the URL when the load is aborted', async () => {
+  await using context = setupTest();
+
+  const code = await encodePlan({
+    stageCount: 1,
+    pieces: [{ id: 'a', pieceID: 'gate', x: 0, z: 0, elevation: 0, rotation: 0, stage: 1 }],
+  });
+
+  useEditorStore
+    .getState()
+    .loadPlan({ id: 'open', name: 'Open plan', plan: { stageCount: 1, pieces: [] } });
+
+  globalThis.location.hash = `#plan=${code}`;
+
+  onTestFinished(() => {
+    globalThis.location.hash = '';
+  });
+
+  const aborted = new AbortController();
+
+  aborted.abort();
+
+  await loadStartingPlan(context.store, aborted.signal);
+
+  expect(useEditorStore.getState()).toMatchObject({
+    documentID: 'open',
+    name: 'Open plan',
+    plan: { stageCount: 1, pieces: [] },
+  });
+
+  expect(globalThis.location.hash).toBe(`#plan=${code}`);
+});
