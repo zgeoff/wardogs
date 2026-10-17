@@ -28,7 +28,7 @@
     // whole-prop forwarding is the idiom once no-destructured-params is on
     "react/jsx-props-no-spreading": "off",
     "react/jsx-max-depth": "off",
-    // the repo's additions to the function-naming taxonomy, listed in agents/project.md
+    // the repo's additions to the function-naming taxonomy, listed in the project-code-style skill
     "zgeoff/function-verb": [
       "error",
       {

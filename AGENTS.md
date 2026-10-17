@@ -1,270 +1,87 @@
-<!-- Generated file — do not edit. Edit agents/project.md here, or agents/shared.md in zgeoff/tools. -->
-
 # Agent Guidelines
 
-## Operations
+This repo is wardogs, a suite of tools for the game Wardogs, served as one TanStack Start app. The
+first tool is the FOB planner, which `docs/fob-tool.md` describes.
 
-- AGENTS.md is generated from `agents/shared.md` and `agents/project.md` — edit the partials, never
-  AGENTS.md itself. The shared partial is synced from
-  [zgeoff/tools](https://github.com/zgeoff/tools); cross-project rule changes belong there.
-- Perform all work on a branch in a git worktree under `.worktrees/` (e.g.
-  `git worktree add .worktrees/<branch> -b <branch>`) — never commit directly on `main`.
-- Use [Conventional Commits](https://www.conventionalcommits.org/) for all commit messages.
-- A squash merge makes the PR title the commit subject, so a PR title is a Conventional Commit too.
-  `feat(#412): add the retry budget` is a title; `add the retry budget` is not.
-- Commit subjects and PR titles use the imperative mood ("add X", never "added X" or a bare noun
-  phrase).
-- Open PRs against `main` using the PR template (`.github/PULL_REQUEST_TEMPLATE.md`). Descriptions
-  are condensed: lead paragraph ≤2 sentences, one-line bullets, ≤150 words — write the short version
-  first, don't draft long and trim.
-- After pushing, link the PR URL in your response.
-- A PR is ready only when its checks are green: watch CI (`gh pr checks <n> --watch`) after opening
-  or updating, and report a failure with what you're doing about it.
+## Required reading
 
-## Code style
+The rules a task needs are not repeated here. Load the skill for the work before starting it.
 
-Mechanically enforced rules (oxfmt, oxlint, format-codemod) aren't repeated here — this file covers
-what tooling can't check.
+| Skill                | Load before                                                                             |
+| -------------------- | --------------------------------------------------------------------------------------- |
+| `code-style`         | writing, reviewing, or renaming any TypeScript — the function-verb taxonomy lives there |
+| `project-code-style` | the same, beside `code-style` — wardogs' own verbs and code rules                       |
+| `testing`            | designing, writing, or reviewing tests                                                  |
+| `docs-writing`       | writing or editing any committed prose: `docs/`, READMEs, this file, skills             |
 
-- One primary export per file, and the file name kebab-cases that export (`with-jest-context.ts`
-  exports `withJestContext`). Exceptions: `index.ts` entrypoints, `types.ts` for a package's shared
-  types, and side-effect-only modules, which are named for what they do (`augment-bun-test.ts`).
-- Module order: imports, the primary export, then private helpers in composition order (depth-first)
-  — never helpers first. Supporting declarations (consts, interfaces, type aliases) sit directly
-  above their first use, never below it and never leading the file; types for the primary export's
-  signature may sit just above it.
-- Acronyms stay uppercase in identifiers (`runCLI`, `parseCLIArgs`, `ASTNode`, `pkgURL`,
-  `isPackageJSON`) — except when one starts a camelCase name, where it lowercases whole (`cliPath`,
-  `astNode`). ID counts as an acronym: `userID`, `sessionID` — never `userId` — and `idToken` when
-  it starts a name. File names are unaffected: kebab-case lowercases everything (`parse-cli-args.ts`
-  exports `parseCLIArgs`).
+## Repo structure
 
-### Function naming
+wardogs is one Bun workspace. Every package takes the name `@wardogs-love/<folder>` and is consumed
+as source through an `exports` map that points at `src/index.ts`.
 
-Every function name starts with a prefix from the closed list below: pick from it, or extend this
-file in the same PR that introduces the new verb. The prefix is a contract — a reader should know
-the function's shape without opening it.
+```text
+apps/
+  web/             the TanStack Start app; SSR renders the shell, and a tool route that needs the
+                   browser, such as the FOB planner, sets `ssr: false`
+  web-e2e/         Playwright specs against the built app
+libs/
+  wardogs/
+    game-data/     the piece catalog and its zod schema; game numbers live here as data, never in
+                   code
+    fob/           the FOB plan model: grid, placement, intersection, stages, totals, and the plan
+                   document's schema and share encoding; pure TypeScript, no React
+    fob-editor/    the planner UI: react-three-fiber scene, zustand store, panels
+    fob-share/     the short-link store: SQLite through Kysely, keyed by a cut of each share code's
+                   hash; server only
+  core/storage/    the versioned document store ({ id, tool, schemaVersion, data }) and its
+                   IndexedDB implementation
+  design/
+    panda-preset/  Panda tokens and theme
+    styled-system/ Panda codegen; the only package that runs full `panda`
+    design-system/ Ark UI components and Ladle stories
+infra/             the Pulumi program for the Cloudflare side of wardogs.love (infra/README.md)
+docs/              what each tool does
+```
 
-**Predicates** — return boolean, no side effects:
+## Packages
 
-| Prefix   | Contract                | Example          |
-| -------- | ----------------------- | ---------------- |
-| `is`     | type or state test      | `isVarDecl`      |
-| `has`    | containment, possession | `hasBlankLine`   |
-| `can`    | capability              | `canResize`      |
-| `should` | policy decision         | `shouldSkipFile` |
-| `needs`  | requirement             | `needsBlankLine` |
-
-**Pure producers** — result comes from arguments alone, no side effects:
-
-| Prefix                        | Contract                                                                  | Example             |
-| ----------------------------- | ------------------------------------------------------------------------- | ------------------- |
-| `build<Result>[From<Source>]` | default constructor for values; drop `From<Source>` when no single source | `buildEditsFromAST` |
-| `define<X>`                   | identity; its only job is compile-time constraint of its literal argument | `defineErrors`      |
-| `parse`                       | unstructured input → structure, invalid input reported                    | `parseSource`       |
-| `encode`                      | structure → its defined compact or wire form, reversed by `decode`        | `encodeState`       |
-| `decode`                      | `encode`'s output → the original structure, malformed input reported      | `decodeState`       |
-| `derive`                      | one-way cryptographic derivation from secret material                     | `deriveAvatarKey`   |
-| `plan`                        | compute an action without performing it                                   | `planGapEdit`       |
-| `pick`                        | select among known alternatives                                           | `pickMode`          |
-| `find`                        | search that can miss — null/undefined on miss                             | `findPrevious`      |
-| `get`                         | cheap access that cannot miss (throwing on a broken invariant is fine)    | `getNodeEnd`        |
-| `collect`                     | gather from a traversal or scan                                           | `collectChildNodes` |
-| `count`                       | how many                                                                  | `countNewlines`     |
-| `split`                       | one value → parts                                                         | `splitLines`        |
-| `merge`                       | parts → one value                                                         | `mergeWindows`      |
-| `sort`                        | reorder                                                                   | `sortEdits`         |
-| `format`                      | value → human-readable string                                             | `formatRange`       |
-| `render`                      | structure → output text or markup                                         | `renderHunk`        |
-| `normalize`                   | variant forms → the canonical form                                        | `normalizePath`     |
-| `resolve`                     | follow indirection to a concrete value                                    | `resolveBinPath`    |
-| `expand`                      | compact form → full form                                                  | `expandInputs`      |
-| `compress`                    | value → its reversible compact encoding                                   | `compressGraph`     |
-| `decompress`                  | reverse a `compress` encoding (non-encoded shorthand is `expand`)         | `decompressGraph`   |
-| `to<Result>`                  | cheap representation change                                               | `toPosixPath`       |
-| `transform`                   | a package's own source→source operation                                   | `transform`         |
-
-**Effectful** — touches the world (filesystem, streams, processes, registries):
-
-| Prefix         | Contract                                                                                                                                | Example            |
-| -------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| `apply`        | perform previously planned changes                                                                                                      | `applyEdits`       |
-| `create`       | bring a resource into existence (file, directory, process)                                                                              | `createWorkDir`    |
-| `claim`        | atomically take exclusive ownership of a work item or resource; ownership ends at commit or an explicit release                         | `claimNextChain`   |
-| `read`         | pull raw content from filesystem or network into memory                                                                                 | `readSource`       |
-| `load`         | read **and** parse into a ready structure                                                                                               | `loadConfig`       |
-| `write`        | persist to the filesystem                                                                                                               | `writeOutput`      |
-| `remove`       | delete a resource                                                                                                                       | `removeStaleDist`  |
-| `update`       | mutate existing state or resource in place                                                                                              | `updateIndex`      |
-| `upsert`       | single-statement insert-or-update keyed by a natural or composite key, refreshing the conflicting row's columns in place                | `upsertUser`       |
-| `set`          | assign a store's named state slice wholesale — the store-setter idiom; partial mutation is `update`                                     | `setSelectedNode`  |
-| `toggle<Flag>` | invert a boolean state slice                                                                                                            | `toggleDevCamera`  |
-| `reset`        | return state to its initial value                                                                                                       | `resetCombatState` |
-| `print`        | write to stdout/stderr                                                                                                                  | `printHelp`        |
-| `run`          | execute a subprocess, task, or whole pipeline                                                                                           | `runCLI`           |
-| `check`        | evaluate and report findings; effects allowed per mode                                                                                  | `checkFile`        |
-| `try<X>`       | X with failures captured as a value instead of a throw                                                                                  | `tryCheckFile`     |
-| `register`     | add to a registry the caller doesn't own                                                                                                | `registerMatcher`  |
-| `subscribe`    | attach a listener to an event source, returning or enabling detachment                                                                  | `subscribeToTicks` |
-| `unsubscribe`  | detach what `subscribe` attached                                                                                                        | `unsubscribe`      |
-| `assert`       | throw when an invariant doesn't hold                                                                                                    | `assertSpan`       |
-| `require`      | throw unless a runtime condition holds — a guard real input can trip (`assert` covers invariants)                                       | `requireAuth`      |
-| `verify`       | test a claim or credential against evidence, rejecting on mismatch                                                                      | `verifySession`    |
-| `emit`         | dispatch an event or notification                                                                                                       | `emitProgress`     |
-| `send`         | transmit a payload to a remote receiver (fire-and-forget or RPC — no resource semantics; REST mutations are `create`/`update`/`remove`) | `sendWebhook`      |
-| `wait`         | block until an event or condition resolves; may return the awaited value                                                                | `waitForMessage`   |
-| `setup`        | prepare the environment or fixture the following code assumes; `teardown` reverses it                                                   | `setupTest`        |
-| `teardown`     | release what `setup` prepared                                                                                                           | `teardownTest`     |
-| `start`        | put a long-running resource into service (server, worker, poll loop); `stop` reverses it                                                | `startQueues`      |
-| `stop`         | take a long-running resource out of service, releasing what `start` acquired                                                            | `stopWorker`       |
-| `drain`        | consume a pending backlog until empty                                                                                                   | `drainJobs`        |
-
-**Wrappers and factories** — the result is behaviour, not data:
-
-| Prefix    | Contract                                  | Example           |
-| --------- | ----------------------------------------- | ----------------- |
-| `with<X>` | HOF that runs a callback inside a context | `withJestContext` |
-| `make<X>` | factory whose result is itself a function | `makeExcluder`    |
-
-**Framework conventions** — where the ecosystem's prefix is load-bearing, it wins:
-
-| Prefix                   | Contract                                                                                                                | Example          |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| `use<X>`                 | React hook — the prefix drives rules-of-hooks linting; helpers inside a hook follow the normal taxonomy                 | `useDebounce`    |
-| `on<Event>`              | event-callback prop or parameter                                                                                        | `onRowClick`     |
-| `handle<Event>`          | local implementation passed to an `on<Event>` prop — the idiomatic React pair; the `handle` ban applies everywhere else | `handleRowClick` |
-| `handle<LifecycleEvent>` | implementation of an engine lifecycle callback, keyed by the engine's lifecycle-event enum                              | `handleTick`     |
-
-**Banned** — each is a vaguer or synonymous form of a listed verb; use that one instead: `handle`
-(except the `handle<Event>` framework conventions), `process`, `manage`, `do`, `perform` (say what
-it does), `execute` (→ `run`), `compute` (→ `build`), `fetch` (→ `read`), `save`/`store` (→
-`write`), `delete` (→ `remove`), `search`/`lookup` (→ `find`/`get`).
-
-Algorithm-native vocabulary (`walk`, `backtrack`, `slideDiagonal`) is allowed inside the module
-implementing that algorithm — forcing list verbs onto textbook terms hides the algorithm.
-
-## Dependencies
-
-- Pin exact versions — no `^`/`~` ranges. (`bun add` saves exact automatically via `exact = true` in
-  bunfig.toml — the rule applies to hand-written edits.)
-
-## Review bots
-
-CodeRabbit reviews every PR. Its shared config lives in the zgeoff/coderabbit repo, and a repo-root
-`.coderabbit.yaml` with `inheritance: true` layers repo-specific settings on top. CodeRabbit reads
-this file as its guidelines. A repo that runs another review bot names it and its config in
-`agents/project.md`, and these rules cover that bot too.
-
-- A PR is ready only after every bot review is read and every finding is answered: a fixed finding's
-  reply cites the commit that fixed it; a declined finding's reply states the reason — when a
-  finding contradicts this file, this file wins and the reply names the rule. Reviews land within a
-  few minutes of opening; read them with `gh pr view <n> --comments` and
-  `gh api repos/<owner>/<repo>/pulls/<n>/comments`. A finding outside the diff arrives in the review
-  body, not as a thread, so its answer is a PR comment.
-- Resolve a thread once its reply is posted, fixed and declined alike (GraphQL
-  `resolveReviewThread`). A finding the agent cannot confidently judge is escalation, not
-  disposition: reply saying so and leave the thread open for a human.
-- Never teach a bot through chat (`@coderabbitai` learnings and the like) — a correction to bot
-  behaviour is an edit to its config, reviewed in a PR.
-- Bots review a PR once, at open; an agent invokes a re-review only when asked. The exception is a
-  PR that got no review at all, such as one opened before the bot was installed: request it once
-  with that bot's documented trigger, such as `@coderabbitai review` for CodeRabbit.
-
-# wardogs ❤️
-
-A suite of tools for the game Wardogs, served as one TanStack Start app. The first tool is the FOB
-planner (`docs/fob-tool.md`).
-
-## Layout
-
-- `apps/web`: the TanStack Start app. SSR renders the shell; a tool route that needs the browser
-  (the FOB planner) sets `ssr: false`.
-- `apps/web-e2e`: Playwright specs against the built app.
-- `libs/wardogs/game-data`: the piece catalog and its zod schema. Game numbers live here as data,
-  never in code.
-- `libs/wardogs/fob`: the FOB plan model: grid, placement, intersection, stages, totals, and the
-  plan document's schema and share encoding. Pure TypeScript, no React.
-- `libs/wardogs/fob-editor`: the planner UI: react-three-fiber scene, zustand store, panels.
-- `libs/wardogs/fob-share`: the short-link store: SQLite through Kysely, keyed by a cut of each
-  share code's hash. Server only.
-- `libs/core/storage`: the versioned document store (`{ id, tool, schemaVersion, data }`) and its
-  IndexedDB implementation.
-- `libs/design/*`: `panda-preset` (tokens and theme), `styled-system` (Panda codegen, the only
-  package that runs full `panda`), `design-system` (Ark UI components and Ladle stories).
-
-## Commands
-
-- `bun run dev` starts the app on port 3000; `bun run ladle` starts the component stories.
-- `bun run lint`, `bun run typecheck`, `bun run test`, `bun run format:check`, `bun run deadcode`,
-  `bun run audit`, and `bun run check:agents` are the checks CI runs. `bun run e2e` builds the app
-  and runs Playwright.
-- `AGENTS.md` is generated: edit `agents/project.md`, then run `bun run build:agents`.
-  `check:agents` fails when the two drift.
-- Codegen output (`styled-system/`, `routeTree.gen.ts`) is gitignored; `bun run codegen` writes it,
-  and every check that needs it depends on it through turbo.
-
-## Workspace dependencies
-
-- Shared versions live in the root catalog; workspace packages reference them with `catalog:`.
-- `bunfig.toml` holds new versions back for 7 days. The `@zgeoff/*` packages from zgeoff/tools are
-  listed in `minimumReleaseAgeExcludes` until their pinned version passes that age.
+- Every external version lives once, in the root `workspaces.catalog`. A package writes `"catalog:"`
+  for an external dependency and `"workspace:*"` for an internal one.
+- Pin exact versions, with no `^` or `~` ranges. `bun add` saves exact versions, so the rule covers
+  hand-written edits.
+- `bunfig.toml` holds new versions back for 7 days. The `@zgeoff/*` packages from zgeoff/tools stay
+  in `minimumReleaseAgeExcludes` until their pinned version passes that age.
 - The root depends on `@tsconfig/strictest` directly. Panda's config loader resolves a tsconfig
   `extends` from the symlinked path, not the real one, so it misses the copy inside
   `@zgeoff/tsconfig`'s own dependencies.
-- Panda 2 drops the `paddingX`/`paddingY` family; write `paddingInline`/`paddingBlock`.
 - Vite bundles the workspace libs into the server build but leaves their npm imports external, and
   the Docker image installs only `apps/web`'s `dependencies`. So a server-side lib's npm packages
   (`kysely`, `kysely-bun-worker`, `zod`) are `apps/web` dependencies too, and `knip.json` ignores
   the ones `apps/web` never imports itself.
 
-## Testing
+## Commands
 
-Load the `testing` skill before writing a test. Pure libraries run under the root preload; React
-packages add `@zgeoff/bun-test-react` (and its `zustand` preload) in their own `bunfig.toml`.
+- `bun run dev` starts the app on port 3000, and `bun run ladle` starts the component stories.
+- `bun run lint`, `bun run typecheck`, `bun run test`, `bun run format:check`, `bun run deadcode` and
+  `bun run audit` are the checks that `pr.yml` runs. `bun run e2e` builds the app and runs
+  Playwright, and `e2e.yml` runs it on a pull request.
+- `bun run format` fixes formatting.
+- Codegen output (`styled-system/`, `routeTree.gen.ts`) is gitignored. `bun run codegen` writes it,
+  and every check that needs it depends on it through turbo.
+- `bun test` reads the `bunfig.toml` in its working directory, so each package's `bunfig.toml` lists
+  its own test preloads. React packages add `@zgeoff/bun-test-react`, and `fob-editor` adds its
+  `zustand` preload.
 
-## Pull requests
+## Deploy and runtime
 
-- Pull requests go out in batches. Each one is green, and every CodeRabbit finding has an answer: a
-  fix with the commit cited, or a decline with the reason. Resolve the thread after the answer.
-- The user merges, unless they say otherwise for a batch.
-- CodeRabbit reads the central zgeoff/coderabbit config. Add a `.coderabbit.yaml` with
-  `inheritance: true` only for rules specific to this repo.
-
-## CI and deploy
-
-- `pr.yml` (delivered by repo-sync) runs the shared checks. The `BUN_CHECK_SCRIPTS` repo variable
-  adds `check:agents` to the standard list.
-- `e2e.yml` runs Playwright on a pull request, since the shared checks do not.
-- `main.yml` runs the checks and e2e on a push to `main`, then deploys to Fly with
-  `flyctl deploy --remote-only` from the repo root. `GIT_SHA` reaches every machine, and `/health`
-  reports it.
-- `infra/` holds the Pulumi program for the Cloudflare side of `wardogs.love` (`infra/README.md`).
-
-## Runtime
-
-Production runs the Start server build under Bun, served through `srvx` (`apps/web/server.ts`). The
-repo pins Bun 1.4.2 (`.bun-version`): Bun 1.3.10 fails to load `react-dom/server` under
-`NODE_ENV=production`.
-
+- `main.yml` runs the checks and e2e on a push to `main`, then deploys to Fly from the repo root with
+  `apps/web/fly.toml`. `GIT_SHA` reaches every machine, and `/health` reports it.
+- Production runs the Start server build under Bun, served through `srvx` (`apps/web/server.ts`).
+  `.bun-version` pins Bun, and Bun 1.3.10 fails to load `react-dom/server` under
+  `NODE_ENV=production`.
 - Short share links live in SQLite at `DATABASE_PATH`: `/data/wardogs.db` on the Fly volume
   `wardogs_data`, `apps/web/.data/wardogs.db` in dev, and `:memory:` in e2e. The database migrates
   itself on first use.
 - The volume pins the app to one machine and to the `rolling` deploy strategy.
-- `bun run dev` runs Vite under Bun (`bun --bun`), since the server code imports `bun:sqlite`.
-
-## Function naming additions
-
-The repo adds these verbs to the shared taxonomy. The plan edits in `libs/wardogs/fob` return a new
-plan and never change their argument; the editor's store actions change the store.
-
-| Prefix   | Contract                                                        | Example              |
-| -------- | --------------------------------------------------------------- | -------------------- |
-| `add`    | a plan with the item appended                                   | `addPlacedPiece`     |
-| `move`   | a plan with the items offset                                    | `movePlacedPieces`   |
-| `rotate` | a plan with the items turned in place                           | `rotatePlacedPieces` |
-| `place`  | put the picked piece into the plan                              | `placeGhost`         |
-| `lift`   | raise or lower something in the scene                           | `liftGhost`          |
-| `select` | change which pieces the select tool holds                       | `selectPieces`       |
-| `undo`   | step the plan back through its history; `redo` steps it forward | `undoPlanEdit`       |
-| `end`    | finish a pointer gesture and apply its result                   | `endGesture`         |
-| `skip`   | a stand-in that does nothing, for a hook a library requires     | `skipRaycast`        |
+- `bun run dev` runs Vite under Bun (`bun --bun`), because the share database runs on `bun:sqlite`
+  through `kysely-bun-worker`.
