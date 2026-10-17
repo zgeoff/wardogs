@@ -12,9 +12,10 @@ the verbs and rules that only wardogs uses, and it never relaxes a rule there.
 
 ## Project verbs
 
-The `zgeoff/function-verb` rule in `.oxlintrc.json` lists the same verbs. The plan edits in
-`libs/wardogs/fob` return a new plan and never change their argument, and the editor's store actions
-change the store.
+The `zgeoff/function-verb` rule in [`.oxlintrc.json`](../../../.oxlintrc.json) lists the same verbs,
+and `check-project-verbs.sh` in the code-style skill fails when the two lists differ. The plan edits
+in `libs/wardogs/fob` return a new plan and never change their argument, and the editor's store
+actions change the store.
 
 | Prefix   | Contract                                                    | Example              |
 | -------- | ----------------------------------------------------------- | -------------------- |
